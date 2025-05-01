@@ -11,6 +11,9 @@ import ForgotPassword from "./pages/ForgotPassword";
 import AppPage from "./pages/App";
 import NotFound from "./pages/NotFound";
 
+// Save the logo URL for global access
+export const LOGO_URL = "/lovable-uploads/e310737e-a3e5-4922-869d-209714dbc556.png";
+
 const queryClient = new QueryClient();
 
 const App = () => (
