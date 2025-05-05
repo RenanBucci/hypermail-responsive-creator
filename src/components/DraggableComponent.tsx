@@ -52,7 +52,7 @@ const DraggableComponent: React.FC<DraggableComponentProps> = ({ id, type, child
     duplicateComponent(id);
   };
 
-  // Don't allow dragging or deletion of header and footer
+  // Não permitir arrastar ou excluir header e footer
   const isFixed = type === 'header' || type === 'footer';
 
   return (

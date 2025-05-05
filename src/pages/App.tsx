@@ -1,7 +1,5 @@
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   DndContext, 
   closestCenter,
@@ -26,8 +24,10 @@ import PropertyEditor from "@/components/PropertyEditor";
 import EmailPreview from "@/components/EmailPreview";
 import SavedEmailsPopover from "@/components/SavedEmailsPopover";
 import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
-// Component types that can be dragged
+// Component types que podem ser arrastados
 const DRAG_COMPONENTS = [
   { id: "text", label: "Texto", icon: "📝" },
   { id: "image", label: "Imagem", icon: "🖼️" },
@@ -47,6 +47,8 @@ const AppPage = () => {
     selectComponent,
     addComponent,
     reorderComponents,
+    saveEmail,
+    exportHTML
   } = useEmailBuilderStore();
 
   const sensors = useSensors(
@@ -61,30 +63,51 @@ const AppPage = () => {
     setActiveId(active.id as string);
   }
 
-  function handleDragOver(event: DragOverEvent) {
-    // We'll implement this if we need more complex drag behavior
-  }
-
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     
     if (!over) return;
     
-    // If dragging from panel to canvas
-    if (DRAG_COMPONENTS.some(item => item.id === active.id)) {
-      // Add a new component
+    // Se estiver arrastando do painel para o canvas
+    if (typeof active.id === 'string' && DRAG_COMPONENTS.some(item => item.id === active.id)) {
+      // Adicione um novo componente
       addComponent(active.id as ComponentType);
       toast.success(`Componente ${active.id} adicionado!`);
       return;
     }
     
-    // If reordering within canvas
+    // Se estiver reordenando dentro do canvas
     if (active.id !== over.id) {
       reorderComponents(active.id as string, over.id as string);
     }
     
     setActiveId(null);
   }
+
+  const handleComponentClick = (type: ComponentType) => {
+    addComponent(type);
+    toast.success(`Componente ${type} adicionado!`);
+  };
+
+  const handleSaveEmail = () => {
+    saveEmail();
+    toast.success("Email salvo com sucesso!");
+  };
+
+  const handleExportHTML = () => {
+    const html = exportHTML();
+    
+    // Cria um blob e faz download do arquivo HTML
+    const blob = new Blob([html], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'email-template.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    toast.success("HTML exportado com sucesso!");
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -94,6 +117,12 @@ const AppPage = () => {
           <h1 className="text-2xl font-bold text-blue-600">HyperMail</h1>
           
           <div className="flex items-center gap-4">
+            <Button onClick={handleSaveEmail} variant="outline" size="sm">
+              Salvar
+            </Button>
+            <Button onClick={handleExportHTML} variant="outline" size="sm">
+              Exportar HTML
+            </Button>
             <div className="text-sm">Olá, {userName}</div>
             <SavedEmailsPopover />
             <Avatar className="h-8 w-8">
@@ -109,7 +138,6 @@ const AppPage = () => {
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
         <div className="flex-1 flex overflow-hidden">
@@ -121,8 +149,9 @@ const AppPage = () => {
                 {DRAG_COMPONENTS.map((component) => (
                   <div 
                     key={component.id}
-                    className="flex flex-col items-center p-3 border rounded-md hover:bg-blue-50 cursor-grab"
-                    data-id={component.id}
+                    id={component.id}
+                    className="flex flex-col items-center p-3 border rounded-md hover:bg-blue-50 cursor-pointer"
+                    onClick={() => handleComponentClick(component.id as ComponentType)}
                   >
                     <div className="text-2xl mb-1">{component.icon}</div>
                     <div className="text-xs text-center">{component.label}</div>
