@@ -4,7 +4,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@/components/ui/button";
 import { useEmailBuilderStore } from "@/store/emailBuilderStore";
-import { Trash2, Copy } from "lucide-react";
+import { Trash2, Copy, Move } from "lucide-react";
 
 interface DraggableComponentProps {
   id: string;
@@ -65,6 +65,20 @@ const DraggableComponent: React.FC<DraggableComponentProps> = ({ id, type, child
       } ${isFixed ? '' : 'cursor-move'}`}
       {...(isFixed ? {} : { ...attributes, ...listeners })}
     >
+      {!isDragging && (
+        <div 
+          className={`absolute top-0 left-0 w-full h-full flex items-center justify-center 
+                     bg-blue-100 bg-opacity-0 group-hover:bg-opacity-10 transition-all 
+                     ${isSelected ? 'border-2 border-blue-500' : ''}`}
+        >
+          {!isFixed && (
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+              <Move className="h-6 w-6 text-blue-600" />
+            </div>
+          )}
+        </div>
+      )}
+
       {isSelected && (
         <div className="absolute top-2 right-2 flex gap-2 bg-white/80 p-1 rounded shadow z-10">
           {!isFixed && (

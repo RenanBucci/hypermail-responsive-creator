@@ -73,6 +73,58 @@ const defaultFooter: EmailComponent = {
   }
 };
 
+// Função para gerar estilos CSS a partir das props
+const generateCssFromProps = (props: ComponentProps) => {
+  let css = '';
+  
+  // Padding
+  if (props.paddingTop || props.paddingBottom || props.paddingLeft || props.paddingRight) {
+    css += `padding: ${props.paddingTop || '20px'} ${props.paddingRight || '20px'} ${props.paddingBottom || '20px'} ${props.paddingLeft || '20px'};`;
+  } else if (props.padding) {
+    css += `padding: ${props.padding};`;
+  }
+  
+  // Background
+  if (props.backgroundColor) {
+    css += `background-color: ${props.backgroundColor};`;
+  }
+  
+  // Text
+  if (props.textColor) {
+    css += `color: ${props.textColor};`;
+  }
+  
+  if (props.fontSize) {
+    css += `font-size: ${props.fontSize}px;`;
+  }
+  
+  if (props.alignment) {
+    css += `text-align: ${props.alignment};`;
+  }
+  
+  // Border
+  if (props.hasBorder) {
+    css += `border: ${props.borderWidth || '1px'} ${props.borderStyle || 'solid'} ${props.borderColor || '#cccccc'};`;
+    
+    if (props.borderRadius) {
+      css += `border-radius: ${props.borderRadius};`;
+    }
+  }
+  
+  // Shadow
+  if (props.hasShadow) {
+    const intensity = props.shadowIntensity || 5;
+    css += `box-shadow: 0 ${intensity / 2}px ${intensity}px ${props.shadowColor || 'rgba(0,0,0,0.2)'};`;
+  }
+  
+  // Custom style
+  if (props.customStyle) {
+    css += props.customStyle;
+  }
+  
+  return css;
+};
+
 // Create the store
 export const useEmailBuilderStore = create<EmailBuilderState>((set, get) => ({
   components: [defaultHeader, defaultFooter],
@@ -199,6 +251,7 @@ export const useEmailBuilderStore = create<EmailBuilderState>((set, get) => ({
     table { border-collapse: collapse; width: 100%; }
     td { padding: 0; }
     img { border: 0; display: block; }
+    .container { max-width: 600px; margin: 0 auto; }
   </style>
 </head>
 <body>
@@ -210,14 +263,16 @@ export const useEmailBuilderStore = create<EmailBuilderState>((set, get) => ({
 
     // Generate HTML for each component
     components.forEach(component => {
+      const componentStyle = generateCssFromProps(component.props);
+      
       switch (component.type) {
         case 'header':
           html += `
           <tr>
-            <td style="padding:${component.props.padding};background-color:${component.props.backgroundColor};text-align:${component.props.alignment};">
-              <img src="${component.props.logo}" alt="${component.props.companyName}" width="200" style="height:auto;display:block;margin:0 auto;">
-              <h1 style="font-size:24px;margin:10px 0 0 0;color:#333333;">${component.props.companyName}</h1>
-              <p style="margin:5px 0 0 0;color:#555555;font-size:16px;">${component.props.tagline}</p>
+            <td style="${componentStyle}" ${component.props.customId ? `id="${component.props.customId}"` : ''} ${component.props.customClasses ? `class="${component.props.customClasses}"` : ''}>
+              <img src="${component.props.logo || '/lovable-uploads/e310737e-a3e5-4922-869d-209714dbc556.png'}" alt="${component.props.companyName || 'Company Logo'}" width="200" style="height:auto;display:block;margin:0 auto;">
+              <h1 style="font-size:24px;margin:10px 0 0 0;color:#333333;text-align:center;">${component.props.companyName || "qvaestvm"}</h1>
+              <p style="margin:5px 0 0 0;color:#555555;font-size:16px;text-align:center;">${component.props.tagline || "tecnologia e inovação"}</p>
             </td>
           </tr>
           `;
@@ -226,7 +281,7 @@ export const useEmailBuilderStore = create<EmailBuilderState>((set, get) => ({
         case 'text':
           html += `
           <tr>
-            <td style="padding:${component.props.padding || '20px'};background-color:${component.props.backgroundColor || '#ffffff'};color:${component.props.textColor || '#333333'};font-size:${component.props.fontSize || '16px'}px;text-align:${component.props.alignment || 'left'};">
+            <td style="${componentStyle}" ${component.props.customId ? `id="${component.props.customId}"` : ''} ${component.props.customClasses ? `class="${component.props.customClasses}"` : ''}>
               ${component.props.content || 'Texto do email aqui'}
             </td>
           </tr>
@@ -234,23 +289,29 @@ export const useEmailBuilderStore = create<EmailBuilderState>((set, get) => ({
           break;
           
         case 'image':
+          const imageStyle = `width:${component.props.width || '100'}%;height:auto;display:block;margin:0 auto;`;
+          const borderRadius = component.props.imageBorderRadius ? `border-radius:${component.props.imageBorderRadius};` : '';
+          
           html += `
           <tr>
-            <td style="padding:${component.props.padding || '20px'};background-color:${component.props.backgroundColor || '#ffffff'};text-align:${component.props.alignment || 'center'};">
-              <img src="${component.props.src || 'https://via.placeholder.com/600x300'}" alt="${component.props.alt || 'Image'}" width="${component.props.width || '100%'}" style="height:auto;display:block;margin:0 auto;">
+            <td style="${componentStyle}" ${component.props.customId ? `id="${component.props.customId}"` : ''} ${component.props.customClasses ? `class="${component.props.customClasses}"` : ''}>
+              <img src="${component.props.src || 'https://via.placeholder.com/600x300'}" alt="${component.props.alt || 'Image'}" style="${imageStyle}${borderRadius}">
             </td>
           </tr>
           `;
           break;
           
         case 'button':
+          const buttonAlignment = component.props.alignment || 'center';
+          const buttonStyle = `background-color:${component.props.buttonColor || '#4A6DA7'};color:${component.props.textColor || '#ffffff'};border-radius:${component.props.borderRadius || '4px'};display:inline-block;padding:12px 30px;text-decoration:none;font-weight:bold;`;
+          
           html += `
           <tr>
-            <td style="padding:${component.props.padding || '20px'};background-color:${component.props.backgroundColor || '#ffffff'};text-align:${component.props.alignment || 'center'};">
-              <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;margin:0 auto;">
+            <td style="${componentStyle}" ${component.props.customId ? `id="${component.props.customId}"` : ''} ${component.props.customClasses ? `class="${component.props.customClasses}"` : ''}>
+              <table role="presentation" style="border-collapse:collapse;border:0;border-spacing:0;margin:0 auto;width:100%;">
                 <tr>
-                  <td style="border-radius:${component.props.borderRadius || '4px'};background-color:${component.props.buttonColor || '#4A6DA7'};text-align:center;padding:0 30px;">
-                    <a href="${component.props.url || '#'}" style="color:${component.props.textColor || '#ffffff'};text-decoration:none;font-weight:bold;display:inline-block;padding:12px 0;font-size:16px;">${component.props.text || 'Clique aqui'}</a>
+                  <td style="text-align:${buttonAlignment};">
+                    <a href="${component.props.url || '#'}" style="${buttonStyle}">${component.props.text || 'Clique aqui'}</a>
                   </td>
                 </tr>
               </table>
@@ -262,7 +323,7 @@ export const useEmailBuilderStore = create<EmailBuilderState>((set, get) => ({
         case 'divider':
           html += `
           <tr>
-            <td style="padding:${component.props.padding || '10px 20px'};background-color:${component.props.backgroundColor || '#ffffff'};">
+            <td style="${componentStyle}" ${component.props.customId ? `id="${component.props.customId}"` : ''} ${component.props.customClasses ? `class="${component.props.customClasses}"` : ''}>
               <hr style="border:none;border-top:${component.props.thickness || '1px'} ${component.props.style || 'solid'} ${component.props.color || '#dddddd'};margin:0;">
             </td>
           </tr>
@@ -272,7 +333,7 @@ export const useEmailBuilderStore = create<EmailBuilderState>((set, get) => ({
         case 'spacer':
           html += `
           <tr>
-            <td style="padding:0;background-color:${component.props.backgroundColor || '#ffffff'};height:${component.props.height || '20'}px;"></td>
+            <td style="padding:0;background-color:${component.props.backgroundColor || '#ffffff'};height:${component.props.height || '20'}px;" ${component.props.customId ? `id="${component.props.customId}"` : ''} ${component.props.customClasses ? `class="${component.props.customClasses}"` : ''}></td>
           </tr>
           `;
           break;
@@ -285,10 +346,10 @@ export const useEmailBuilderStore = create<EmailBuilderState>((set, get) => ({
           
           html += `
           <tr>
-            <td style="padding:${component.props.padding};background-color:${component.props.backgroundColor};color:${component.props.textColor};text-align:center;font-size:14px;">
-              <div style="margin-bottom:10px;">${socialIcons}</div>
-              <p style="margin:5px 0;">${component.props.companyAddress}</p>
-              <p style="margin:5px 0;">${component.props.copyrightText}</p>
+            <td style="${componentStyle}" ${component.props.customId ? `id="${component.props.customId}"` : ''} ${component.props.customClasses ? `class="${component.props.customClasses}"` : ''}>
+              <div style="margin-bottom:10px;text-align:center;">${socialIcons}</div>
+              <p style="margin:5px 0;text-align:center;">${component.props.companyAddress || "Seu endereço aqui"}</p>
+              <p style="margin:5px 0;text-align:center;">${component.props.copyrightText || `© ${new Date().getFullYear()} qvaestvm. Todos os direitos reservados.`}</p>
             </td>
           </tr>
           `;

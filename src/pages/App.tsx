@@ -8,8 +8,8 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
-  DragOverEvent,
-  DragStartEvent
+  DragStartEvent,
+  DragOverlay
 } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -40,6 +40,8 @@ const DRAG_COMPONENTS = [
 const AppPage = () => {
   const [userName] = useState("Usuário");
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [isDraggingNew, setIsDraggingNew] = useState(false);
+  const [dragType, setDragType] = useState<ComponentType | null>(null);
   
   const { 
     components,
@@ -52,7 +54,11 @@ const AppPage = () => {
   } = useEmailBuilderStore();
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -61,10 +67,24 @@ const AppPage = () => {
   function handleDragStart(event: DragStartEvent) {
     const { active } = event;
     setActiveId(active.id as string);
+    
+    // Verificar se estamos arrastando um novo componente do painel
+    const componentType = DRAG_COMPONENTS.find(c => c.id === active.id);
+    if (componentType) {
+      setIsDraggingNew(true);
+      setDragType(active.id as ComponentType);
+    } else {
+      setIsDraggingNew(false);
+      setDragType(null);
+    }
   }
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
+    
+    setActiveId(null);
+    setIsDraggingNew(false);
+    setDragType(null);
     
     if (!over) return;
     
@@ -80,8 +100,6 @@ const AppPage = () => {
     if (active.id !== over.id) {
       reorderComponents(active.id as string, over.id as string);
     }
-    
-    setActiveId(null);
   }
 
   const handleComponentClick = (type: ComponentType) => {
@@ -107,6 +125,22 @@ const AppPage = () => {
     document.body.removeChild(a);
     
     toast.success("HTML exportado com sucesso!");
+  };
+
+  // Renderização do componente que está sendo arrastado
+  const renderDragOverlay = () => {
+    if (!activeId || !isDraggingNew || !dragType) return null;
+    
+    return (
+      <DragOverlay>
+        <div className="opacity-50 pointer-events-none border-2 border-dashed border-blue-400 p-4 bg-blue-50 rounded">
+          <div className="text-center">
+            <div className="text-2xl mb-1">{DRAG_COMPONENTS.find(c => c.id === dragType)?.icon}</div>
+            <div className="text-xs">{DRAG_COMPONENTS.find(c => c.id === dragType)?.label}</div>
+          </div>
+        </div>
+      </DragOverlay>
+    );
   };
 
   return (
@@ -152,6 +186,10 @@ const AppPage = () => {
                     id={component.id}
                     className="flex flex-col items-center p-3 border rounded-md hover:bg-blue-50 cursor-pointer"
                     onClick={() => handleComponentClick(component.id as ComponentType)}
+                    draggable={true}
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData('componentType', component.id);
+                    }}
                   >
                     <div className="text-2xl mb-1">{component.icon}</div>
                     <div className="text-xs text-center">{component.label}</div>
@@ -166,7 +204,21 @@ const AppPage = () => {
             className="flex-1 overflow-y-auto p-4 bg-gray-100" 
             onClick={() => selectComponent(null)}
           >
-            <div className="bg-white min-h-[600px] max-w-[600px] mx-auto p-4 shadow-md rounded">
+            <div 
+              className="bg-white min-h-[600px] max-w-[600px] mx-auto p-4 shadow-md rounded"
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                const componentType = e.dataTransfer.getData('componentType');
+                if (componentType) {
+                  addComponent(componentType as ComponentType);
+                  toast.success(`Componente ${componentType} adicionado!`);
+                }
+              }}
+            >
               <SortableContext
                 items={components.map(c => c.id)}
                 strategy={verticalListSortingStrategy}
@@ -200,6 +252,8 @@ const AppPage = () => {
             {selectedComponentId ? <PropertyEditor /> : <EmailPreview />}
           </div>
         </div>
+        
+        {renderDragOverlay()}
       </DndContext>
     </div>
   );

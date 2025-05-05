@@ -6,7 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Instagram, Facebook } from "lucide-react";
+import { Instagram, Facebook, Square, Bold, Italic, Underline } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 
 const PropertyEditor: React.FC = () => {
   const { components, selectedComponentId, updateComponentProps } = useEmailBuilderStore();
@@ -33,51 +36,36 @@ const PropertyEditor: React.FC = () => {
     <div className="p-4">
       <h2 className="text-lg font-medium mb-4">Propriedades</h2>
       
-      <div className="space-y-4">
-        {renderEditorByType(selectedComponent, updateProps)}
-      </div>
+      <Tabs defaultValue="content">
+        <TabsList className="grid w-full grid-cols-3 mb-4">
+          <TabsTrigger value="content">Conteúdo</TabsTrigger>
+          <TabsTrigger value="style">Estilo</TabsTrigger>
+          <TabsTrigger value="advanced">Avançado</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="content" className="space-y-4">
+          {renderContentEditor(selectedComponent, updateProps)}
+        </TabsContent>
+        
+        <TabsContent value="style" className="space-y-4">
+          {renderStyleEditor(selectedComponent, updateProps)}
+        </TabsContent>
+        
+        <TabsContent value="advanced" className="space-y-4">
+          {renderAdvancedEditor(selectedComponent, updateProps)}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
 
-const renderEditorByType = (component: EmailComponent, updateProps: (props: any) => void) => {
+const renderContentEditor = (component: EmailComponent, updateProps: (props: any) => void) => {
   const { type, props } = component;
-
-  const commonStyleProps = (
-    <>
-      <div className="space-y-2 mb-4">
-        <Label>Padding</Label>
-        <Input
-          value={props.padding || "20px"}
-          onChange={(e) => updateProps({ padding: e.target.value })}
-          placeholder="ex: 20px ou 10px 20px"
-        />
-      </div>
-
-      <div className="space-y-2 mb-4">
-        <Label>Cor de fundo</Label>
-        <div className="flex items-center gap-2">
-          <Input
-            type="color"
-            value={props.backgroundColor || "#ffffff"}
-            onChange={(e) => updateProps({ backgroundColor: e.target.value })}
-            className="w-12 h-10 p-1"
-          />
-          <Input
-            value={props.backgroundColor || "#ffffff"}
-            onChange={(e) => updateProps({ backgroundColor: e.target.value })}
-            placeholder="#ffffff"
-          />
-        </div>
-      </div>
-    </>
-  );
 
   switch (type) {
     case "header":
       return (
         <>
-          {commonStyleProps}
           <div className="space-y-2 mb-4">
             <Label>Logo URL</Label>
             <Input
@@ -102,59 +90,12 @@ const renderEditorByType = (component: EmailComponent, updateProps: (props: any)
               placeholder="Slogan ou tagline"
             />
           </div>
-          <div className="space-y-2 mb-4">
-            <Label>Alinhamento</Label>
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                variant={props.alignment === "left" ? "default" : "outline"}
-                onClick={() => updateProps({ alignment: "left" })}
-                className="flex-1"
-              >
-                Esquerda
-              </Button>
-              <Button
-                type="button"
-                variant={props.alignment === "center" ? "default" : "outline"}
-                onClick={() => updateProps({ alignment: "center" })}
-                className="flex-1"
-              >
-                Centro
-              </Button>
-              <Button
-                type="button"
-                variant={props.alignment === "right" ? "default" : "outline"}
-                onClick={() => updateProps({ alignment: "right" })}
-                className="flex-1"
-              >
-                Direita
-              </Button>
-            </div>
-          </div>
         </>
       );
 
     case "footer":
       return (
         <>
-          {commonStyleProps}
-          <div className="space-y-2 mb-4">
-            <Label>Cor do texto</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                type="color"
-                value={props.textColor || "#555555"}
-                onChange={(e) => updateProps({ textColor: e.target.value })}
-                className="w-12 h-10 p-1"
-              />
-              <Input
-                value={props.textColor || "#555555"}
-                onChange={(e) => updateProps({ textColor: e.target.value })}
-                placeholder="#555555"
-              />
-            </div>
-          </div>
-          
           <div className="space-y-2 mb-4">
             <Label>Endereço da empresa</Label>
             <Input
@@ -238,74 +179,46 @@ const renderEditorByType = (component: EmailComponent, updateProps: (props: any)
     case "text":
       return (
         <>
-          {commonStyleProps}
           <div className="space-y-2 mb-4">
             <Label>Conteúdo</Label>
+            <div className="mb-2 flex gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => {
+                  const newContent = props.content || '';
+                  updateProps({ content: `<strong>${newContent}</strong>` });
+                }}
+              >
+                <Bold className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  const newContent = props.content || '';
+                  updateProps({ content: `<em>${newContent}</em>` });
+                }}
+              >
+                <Italic className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  const newContent = props.content || '';
+                  updateProps({ content: `<u>${newContent}</u>` });
+                }}
+              >
+                <Underline className="h-4 w-4" />
+              </Button>
+            </div>
             <textarea
               value={props.content || ""}
               onChange={(e) => updateProps({ content: e.target.value })}
               placeholder="Digite o texto aqui"
-              className="w-full min-h-[100px] p-2 border rounded"
+              className="w-full min-h-[150px] p-2 border rounded"
             />
-          </div>
-          <div className="space-y-2 mb-4">
-            <Label>Cor do texto</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                type="color"
-                value={props.textColor || "#333333"}
-                onChange={(e) => updateProps({ textColor: e.target.value })}
-                className="w-12 h-10 p-1"
-              />
-              <Input
-                value={props.textColor || "#333333"}
-                onChange={(e) => updateProps({ textColor: e.target.value })}
-                placeholder="#333333"
-              />
-            </div>
-          </div>
-          <div className="space-y-2 mb-4">
-            <Label>Tamanho da fonte (px)</Label>
-            <div className="flex items-center gap-2">
-              <Slider
-                value={[props.fontSize || 16]}
-                min={8}
-                max={36}
-                step={1}
-                onValueChange={(values) => updateProps({ fontSize: values[0] })}
-                className="flex-1"
-              />
-              <span className="w-8 text-center">{props.fontSize || 16}</span>
-            </div>
-          </div>
-          <div className="space-y-2 mb-4">
-            <Label>Alinhamento</Label>
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                variant={props.alignment === "left" ? "default" : "outline"}
-                onClick={() => updateProps({ alignment: "left" })}
-                className="flex-1"
-              >
-                Esquerda
-              </Button>
-              <Button
-                type="button"
-                variant={props.alignment === "center" ? "default" : "outline"}
-                onClick={() => updateProps({ alignment: "center" })}
-                className="flex-1"
-              >
-                Centro
-              </Button>
-              <Button
-                type="button"
-                variant={props.alignment === "right" ? "default" : "outline"}
-                onClick={() => updateProps({ alignment: "right" })}
-                className="flex-1"
-              >
-                Direita
-              </Button>
-            </div>
           </div>
         </>
       );
@@ -313,7 +226,6 @@ const renderEditorByType = (component: EmailComponent, updateProps: (props: any)
     case "image":
       return (
         <>
-          {commonStyleProps}
           <div className="space-y-2 mb-4">
             <Label>URL da imagem</Label>
             <Input
@@ -321,6 +233,16 @@ const renderEditorByType = (component: EmailComponent, updateProps: (props: any)
               onChange={(e) => updateProps({ src: e.target.value })}
               placeholder="https://exemplo.com/imagem.jpg"
             />
+            {props.src && (
+              <div className="mt-2 border p-2 rounded">
+                <img 
+                  src={props.src} 
+                  alt={props.alt || "Preview"} 
+                  className="max-w-full h-auto" 
+                  style={{ maxHeight: "150px", objectFit: "contain" }}
+                />
+              </div>
+            )}
           </div>
           <div className="space-y-2 mb-4">
             <Label>Texto alternativo</Label>
@@ -330,56 +252,12 @@ const renderEditorByType = (component: EmailComponent, updateProps: (props: any)
               placeholder="Descrição da imagem"
             />
           </div>
-          <div className="space-y-2 mb-4">
-            <Label>Largura (%)</Label>
-            <div className="flex items-center gap-2">
-              <Slider
-                value={[props.width || 100]}
-                min={10}
-                max={100}
-                step={5}
-                onValueChange={(values) => updateProps({ width: values[0] })}
-                className="flex-1"
-              />
-              <span className="w-12 text-center">{props.width || 100}%</span>
-            </div>
-          </div>
-          <div className="space-y-2 mb-4">
-            <Label>Alinhamento</Label>
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                variant={props.alignment === "left" ? "default" : "outline"}
-                onClick={() => updateProps({ alignment: "left" })}
-                className="flex-1"
-              >
-                Esquerda
-              </Button>
-              <Button
-                type="button"
-                variant={props.alignment === "center" ? "default" : "outline"}
-                onClick={() => updateProps({ alignment: "center" })}
-                className="flex-1"
-              >
-                Centro
-              </Button>
-              <Button
-                type="button"
-                variant={props.alignment === "right" ? "default" : "outline"}
-                onClick={() => updateProps({ alignment: "right" })}
-                className="flex-1"
-              >
-                Direita
-              </Button>
-            </div>
-          </div>
         </>
       );
 
     case "button":
       return (
         <>
-          {commonStyleProps}
           <div className="space-y-2 mb-4">
             <Label>Texto do botão</Label>
             <Input
@@ -396,118 +274,12 @@ const renderEditorByType = (component: EmailComponent, updateProps: (props: any)
               placeholder="https://exemplo.com"
             />
           </div>
-          <div className="space-y-2 mb-4">
-            <Label>Cor do botão</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                type="color"
-                value={props.buttonColor || "#4A6DA7"}
-                onChange={(e) => updateProps({ buttonColor: e.target.value })}
-                className="w-12 h-10 p-1"
-              />
-              <Input
-                value={props.buttonColor || "#4A6DA7"}
-                onChange={(e) => updateProps({ buttonColor: e.target.value })}
-                placeholder="#4A6DA7"
-              />
-            </div>
-          </div>
-          <div className="space-y-2 mb-4">
-            <Label>Cor do texto</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                type="color"
-                value={props.textColor || "#ffffff"}
-                onChange={(e) => updateProps({ textColor: e.target.value })}
-                className="w-12 h-10 p-1"
-              />
-              <Input
-                value={props.textColor || "#ffffff"}
-                onChange={(e) => updateProps({ textColor: e.target.value })}
-                placeholder="#ffffff"
-              />
-            </div>
-          </div>
-          <div className="space-y-2 mb-4">
-            <Label>Raio da borda (px)</Label>
-            <div className="flex items-center gap-2">
-              <Slider
-                value={[props.borderRadius || 4]}
-                min={0}
-                max={20}
-                step={1}
-                onValueChange={(values) => updateProps({ borderRadius: values[0] })}
-                className="flex-1"
-              />
-              <span className="w-8 text-center">{props.borderRadius || 4}</span>
-            </div>
-          </div>
-          <div className="space-y-2 mb-4">
-            <Label>Alinhamento</Label>
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                variant={props.alignment === "left" ? "default" : "outline"}
-                onClick={() => updateProps({ alignment: "left" })}
-                className="flex-1"
-              >
-                Esquerda
-              </Button>
-              <Button
-                type="button"
-                variant={props.alignment === "center" ? "default" : "outline"}
-                onClick={() => updateProps({ alignment: "center" })}
-                className="flex-1"
-              >
-                Centro
-              </Button>
-              <Button
-                type="button"
-                variant={props.alignment === "right" ? "default" : "outline"}
-                onClick={() => updateProps({ alignment: "right" })}
-                className="flex-1"
-              >
-                Direita
-              </Button>
-            </div>
-          </div>
         </>
       );
 
     case "divider":
       return (
         <>
-          {commonStyleProps}
-          <div className="space-y-2 mb-4">
-            <Label>Cor</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                type="color"
-                value={props.color || "#dddddd"}
-                onChange={(e) => updateProps({ color: e.target.value })}
-                className="w-12 h-10 p-1"
-              />
-              <Input
-                value={props.color || "#dddddd"}
-                onChange={(e) => updateProps({ color: e.target.value })}
-                placeholder="#dddddd"
-              />
-            </div>
-          </div>
-          <div className="space-y-2 mb-4">
-            <Label>Espessura (px)</Label>
-            <div className="flex items-center gap-2">
-              <Slider
-                value={[parseInt(props.thickness) || 1]}
-                min={1}
-                max={10}
-                step={1}
-                onValueChange={(values) => updateProps({ thickness: values[0] + "px" })}
-                className="flex-1"
-              />
-              <span className="w-8 text-center">{parseInt(props.thickness) || 1}</span>
-            </div>
-          </div>
           <div className="space-y-2 mb-4">
             <Label>Estilo</Label>
             <div className="flex gap-2">
@@ -543,7 +315,6 @@ const renderEditorByType = (component: EmailComponent, updateProps: (props: any)
     case "spacer":
       return (
         <>
-          {commonStyleProps}
           <div className="space-y-2 mb-4">
             <Label>Altura (px)</Label>
             <div className="flex items-center gap-2">
@@ -564,6 +335,387 @@ const renderEditorByType = (component: EmailComponent, updateProps: (props: any)
     default:
       return <p>Nenhuma propriedade disponível para este componente.</p>;
   }
+};
+
+const renderStyleEditor = (component: EmailComponent, updateProps: (props: any) => void) => {
+  const { type, props } = component;
+
+  // Compartilhados por todos os componentes
+  return (
+    <>
+      <div className="space-y-2 mb-4">
+        <Label>Cor de fundo</Label>
+        <div className="flex items-center gap-2">
+          <Input
+            type="color"
+            value={props.backgroundColor || "#ffffff"}
+            onChange={(e) => updateProps({ backgroundColor: e.target.value })}
+            className="w-12 h-10 p-1"
+          />
+          <Input
+            value={props.backgroundColor || "#ffffff"}
+            onChange={(e) => updateProps({ backgroundColor: e.target.value })}
+            placeholder="#ffffff"
+          />
+        </div>
+      </div>
+
+      {type !== "spacer" && (
+        <div className="space-y-2 mb-4">
+          <Label>Espaçamento (padding)</Label>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <Label className="text-xs">Superior (px)</Label>
+              <Input
+                type="number"
+                value={parseInt(props.paddingTop) || 20}
+                onChange={(e) => updateProps({ paddingTop: parseInt(e.target.value) + "px" })}
+                min={0}
+                max={100}
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Inferior (px)</Label>
+              <Input
+                type="number"
+                value={parseInt(props.paddingBottom) || 20}
+                onChange={(e) => updateProps({ paddingBottom: parseInt(e.target.value) + "px" })}
+                min={0}
+                max={100}
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Esquerda (px)</Label>
+              <Input
+                type="number"
+                value={parseInt(props.paddingLeft) || 20}
+                onChange={(e) => updateProps({ paddingLeft: parseInt(e.target.value) + "px" })}
+                min={0}
+                max={100}
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Direita (px)</Label>
+              <Input
+                type="number"
+                value={parseInt(props.paddingRight) || 20}
+                onChange={(e) => updateProps({ paddingRight: parseInt(e.target.value) + "px" })}
+                min={0}
+                max={100}
+              />
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-2"
+            onClick={() => {
+              const padding = parseInt(props.paddingTop) || 20;
+              updateProps({
+                padding: `${padding}px`,
+                paddingTop: `${padding}px`,
+                paddingBottom: `${padding}px`,
+                paddingLeft: `${padding}px`,
+                paddingRight: `${padding}px`,
+              });
+            }}
+          >
+            Igualar todos
+          </Button>
+        </div>
+      )}
+
+      {type !== "divider" && type !== "spacer" && (
+        <div className="space-y-2 mb-4">
+          <Label>Borda</Label>
+          <div className="flex items-center gap-2 mb-2">
+            <Switch
+              checked={props.hasBorder === true}
+              onCheckedChange={(checked) => updateProps({ hasBorder: checked })}
+            />
+            <span className="text-sm">Mostrar borda</span>
+          </div>
+          
+          {props.hasBorder && (
+            <>
+              <div className="flex items-center gap-2 mt-2">
+                <Label className="text-xs w-20">Espessura</Label>
+                <Slider
+                  value={[parseInt(props.borderWidth) || 1]}
+                  min={1}
+                  max={10}
+                  step={1}
+                  onValueChange={(values) => updateProps({ borderWidth: values[0] + "px" })}
+                  className="flex-1"
+                />
+                <span className="w-8 text-center">{parseInt(props.borderWidth) || 1}px</span>
+              </div>
+              
+              <div className="flex items-center gap-2 mt-2">
+                <Label className="text-xs w-20">Cor</Label>
+                <Input
+                  type="color"
+                  value={props.borderColor || "#cccccc"}
+                  onChange={(e) => updateProps({ borderColor: e.target.value })}
+                  className="w-10 h-8 p-1"
+                />
+                <Input
+                  value={props.borderColor || "#cccccc"}
+                  onChange={(e) => updateProps({ borderColor: e.target.value })}
+                  placeholder="#cccccc"
+                  className="flex-1"
+                />
+              </div>
+              
+              <div className="flex items-center gap-2 mt-2">
+                <Label className="text-xs w-20">Estilo</Label>
+                <Select 
+                  value={props.borderStyle || "solid"}
+                  onValueChange={(value) => updateProps({ borderStyle: value })}
+                >
+                  <SelectTrigger className="flex-1">
+                    <SelectValue placeholder="Estilo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="solid">Sólido</SelectItem>
+                    <SelectItem value="dashed">Tracejado</SelectItem>
+                    <SelectItem value="dotted">Pontilhado</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="flex items-center gap-2 mt-2">
+                <Label className="text-xs w-20">Raio (px)</Label>
+                <Slider
+                  value={[parseInt(props.borderRadius) || 0]}
+                  min={0}
+                  max={20}
+                  step={1}
+                  onValueChange={(values) => updateProps({ borderRadius: values[0] + "px" })}
+                  className="flex-1"
+                />
+                <span className="w-8 text-center">{parseInt(props.borderRadius) || 0}px</span>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+      
+      {(type === "text" || type === "button") && (
+        <div className="space-y-2 mb-4">
+          <Label>Cor do texto</Label>
+          <div className="flex items-center gap-2">
+            <Input
+              type="color"
+              value={props.textColor || "#333333"}
+              onChange={(e) => updateProps({ textColor: e.target.value })}
+              className="w-12 h-10 p-1"
+            />
+            <Input
+              value={props.textColor || "#333333"}
+              onChange={(e) => updateProps({ textColor: e.target.value })}
+              placeholder="#333333"
+            />
+          </div>
+        </div>
+      )}
+
+      {type === "text" && (
+        <div className="space-y-2 mb-4">
+          <Label>Tamanho da fonte (px)</Label>
+          <div className="flex items-center gap-2">
+            <Slider
+              value={[props.fontSize || 16]}
+              min={8}
+              max={36}
+              step={1}
+              onValueChange={(values) => updateProps({ fontSize: values[0] })}
+              className="flex-1"
+            />
+            <span className="w-8 text-center">{props.fontSize || 16}</span>
+          </div>
+        </div>
+      )}
+
+      {(type === "text" || type === "image" || type === "button") && (
+        <div className="space-y-2 mb-4">
+          <Label>Alinhamento</Label>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant={props.alignment === "left" ? "default" : "outline"}
+              onClick={() => updateProps({ alignment: "left" })}
+              className="flex-1"
+            >
+              Esquerda
+            </Button>
+            <Button
+              type="button"
+              variant={props.alignment === "center" ? "default" : "outline"}
+              onClick={() => updateProps({ alignment: "center" })}
+              className="flex-1"
+            >
+              Centro
+            </Button>
+            <Button
+              type="button"
+              variant={props.alignment === "right" ? "default" : "outline"}
+              onClick={() => updateProps({ alignment: "right" })}
+              className="flex-1"
+            >
+              Direita
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {type === "image" && (
+        <div className="space-y-2 mb-4">
+          <Label>Largura (%)</Label>
+          <div className="flex items-center gap-2">
+            <Slider
+              value={[props.width || 100]}
+              min={10}
+              max={100}
+              step={5}
+              onValueChange={(values) => updateProps({ width: values[0] })}
+              className="flex-1"
+            />
+            <span className="w-12 text-center">{props.width || 100}%</span>
+          </div>
+        </div>
+      )}
+
+      {type === "divider" && (
+        <>
+          <div className="space-y-2 mb-4">
+            <Label>Cor</Label>
+            <div className="flex items-center gap-2">
+              <Input
+                type="color"
+                value={props.color || "#dddddd"}
+                onChange={(e) => updateProps({ color: e.target.value })}
+                className="w-12 h-10 p-1"
+              />
+              <Input
+                value={props.color || "#dddddd"}
+                onChange={(e) => updateProps({ color: e.target.value })}
+                placeholder="#dddddd"
+              />
+            </div>
+          </div>
+          <div className="space-y-2 mb-4">
+            <Label>Espessura (px)</Label>
+            <div className="flex items-center gap-2">
+              <Slider
+                value={[parseInt(props.thickness) || 1]}
+                min={1}
+                max={10}
+                step={1}
+                onValueChange={(values) => updateProps({ thickness: values[0] + "px" })}
+                className="flex-1"
+              />
+              <span className="w-8 text-center">{parseInt(props.thickness) || 1}</span>
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+};
+
+const renderAdvancedEditor = (component: EmailComponent, updateProps: (props: any) => void) => {
+  const { type, props } = component;
+
+  // Configurações avançadas compartilhadas
+  return (
+    <>
+      <div className="space-y-2 mb-4">
+        <Label>Sombra</Label>
+        <div className="flex items-center gap-2 mb-2">
+          <Switch
+            checked={props.hasShadow === true}
+            onCheckedChange={(checked) => updateProps({ hasShadow: checked })}
+          />
+          <span className="text-sm">Aplicar sombra</span>
+        </div>
+        
+        {props.hasShadow && (
+          <>
+            <div className="flex items-center gap-2 mt-2">
+              <Label className="text-xs w-20">Intensidade</Label>
+              <Slider
+                value={[props.shadowIntensity || 5]}
+                min={1}
+                max={20}
+                step={1}
+                onValueChange={(values) => updateProps({ shadowIntensity: values[0] })}
+                className="flex-1"
+              />
+              <span className="w-8 text-center">{props.shadowIntensity || 5}</span>
+            </div>
+            
+            <div className="flex items-center gap-2 mt-2">
+              <Label className="text-xs w-20">Cor</Label>
+              <Input
+                type="color"
+                value={props.shadowColor || "#00000033"}
+                onChange={(e) => updateProps({ shadowColor: e.target.value })}
+                className="w-10 h-8 p-1"
+              />
+              <Input
+                value={props.shadowColor || "#00000033"}
+                onChange={(e) => updateProps({ shadowColor: e.target.value })}
+                placeholder="#00000033"
+                className="flex-1"
+              />
+            </div>
+          </>
+        )}
+      </div>
+
+      {type !== "spacer" && (
+        <div className="space-y-2 mb-4">
+          <Label>ID personalizado</Label>
+          <Input
+            value={props.customId || ""}
+            onChange={(e) => updateProps({ customId: e.target.value })}
+            placeholder="ex: meu-componente"
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            ID para referência em CSS ou JavaScript
+          </p>
+        </div>
+      )}
+
+      {type !== "spacer" && (
+        <div className="space-y-2 mb-4">
+          <Label>Classes CSS personalizadas</Label>
+          <Input
+            value={props.customClasses || ""}
+            onChange={(e) => updateProps({ customClasses: e.target.value })}
+            placeholder="ex: minha-classe outra-classe"
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Classes CSS separadas por espaço
+          </p>
+        </div>
+      )}
+
+      <div className="space-y-2 mb-4">
+        <Label>CSS inline personalizado</Label>
+        <textarea
+          value={props.customStyle || ""}
+          onChange={(e) => updateProps({ customStyle: e.target.value })}
+          placeholder="color: red; font-weight: bold;"
+          className="w-full min-h-[100px] p-2 border rounded"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Estilos CSS inline no formato propriedade: valor;
+        </p>
+      </div>
+    </>
+  );
 };
 
 export default PropertyEditor;

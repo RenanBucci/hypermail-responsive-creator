@@ -15,15 +15,72 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 }) => {
   const { type, props } = component;
 
+  // Função para gerar estilos comuns
+  const generateCommonStyles = () => {
+    let paddingValue = props.padding || "20px";
+    
+    // Se temos valores individuais de padding, usá-los
+    if (props.paddingTop || props.paddingBottom || props.paddingLeft || props.paddingRight) {
+      paddingValue = `${props.paddingTop || '20px'} ${props.paddingRight || '20px'} ${props.paddingBottom || '20px'} ${props.paddingLeft || '20px'}`;
+    }
+    
+    let styles: React.CSSProperties = {
+      backgroundColor: props.backgroundColor || "transparent",
+      padding: paddingValue,
+    };
+    
+    // Adicionar borda se habilitada
+    if (props.hasBorder) {
+      styles.border = `${props.borderWidth || '1px'} ${props.borderStyle || 'solid'} ${props.borderColor || '#cccccc'}`;
+      styles.borderRadius = props.borderRadius || "0px";
+    }
+    
+    // Adicionar sombra se habilitada
+    if (props.hasShadow) {
+      const intensity = props.shadowIntensity || 5;
+      styles.boxShadow = `0 ${intensity / 2}px ${intensity}px ${props.shadowColor || 'rgba(0,0,0,0.2)'}`;
+    }
+    
+    // Aplicar estilos personalizados inline
+    if (props.customStyle) {
+      try {
+        // Converter string de estilo para objeto
+        const customStyleString = props.customStyle.replace(/\s+/g, '');
+        const customStylePairs = customStyleString.split(';').filter(Boolean);
+        
+        for (const pair of customStylePairs) {
+          const [property, value] = pair.split(':');
+          if (property && value) {
+            // @ts-ignore - Propriedades dinâmicas
+            styles[property.trim()] = value.trim();
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao processar estilo personalizado:', error);
+      }
+    }
+    
+    return styles;
+  };
+
+  // Função para gerar classes CSS
+  const generateClasses = () => {
+    let classes = "";
+    
+    if (props.customClasses) {
+      classes += ` ${props.customClasses}`;
+    }
+    
+    return classes.trim();
+  };
+
   switch (type) {
     case "header":
       return (
         <div 
-          style={{
-            backgroundColor: props.backgroundColor || "#ffffff",
-            padding: props.padding || "20px",
-            textAlign: props.alignment || "center" as any
-          }}
+          style={generateCommonStyles()}
+          className={generateClasses()}
+          id={props.customId || undefined}
         >
           <img
             src={props.logo || LOGO_URL}
@@ -41,11 +98,11 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
       return (
         <div
           style={{
-            backgroundColor: props.backgroundColor || "#f5f5f5",
+            ...generateCommonStyles(),
             color: props.textColor || "#555555",
-            padding: props.padding || "20px"
           }}
-          className="text-center"
+          className={`text-center ${generateClasses()}`}
+          id={props.customId || undefined}
         >
           <div className="flex justify-center space-x-4 mb-3">
             {(props.socialLinks || []).map((social: any, idx: number) => (
@@ -77,12 +134,13 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
       return (
         <div
           style={{
-            backgroundColor: props.backgroundColor || "transparent",
-            padding: props.padding || "20px",
+            ...generateCommonStyles(),
             color: props.textColor || "#333333",
             fontSize: `${props.fontSize || 16}px`,
             textAlign: props.alignment || "left" as any
           }}
+          className={generateClasses()}
+          id={props.customId || undefined}
           dangerouslySetInnerHTML={{ __html: props.content || "Coloque seu texto aqui" }}
         />
       );
@@ -91,17 +149,19 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
       return (
         <div
           style={{
-            backgroundColor: props.backgroundColor || "transparent",
-            padding: props.padding || "20px",
+            ...generateCommonStyles(),
             textAlign: props.alignment || "center" as any
           }}
+          className={generateClasses()}
+          id={props.customId || undefined}
         >
           <img
             src={props.src || "https://via.placeholder.com/600x300"}
             alt={props.alt || "Image"}
             className="max-w-full h-auto mx-auto"
             style={{
-              width: props.width ? `${props.width}%` : "100%"
+              width: props.width ? `${props.width}%` : "100%",
+              borderRadius: props.imageBorderRadius || undefined
             }}
           />
         </div>
@@ -111,10 +171,11 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
       return (
         <div
           style={{
-            backgroundColor: props.backgroundColor || "transparent",
-            padding: props.padding || "20px",
+            ...generateCommonStyles(),
             textAlign: props.alignment || "center" as any
           }}
+          className={generateClasses()}
+          id={props.customId || undefined}
         >
           <a
             href={isPreview ? "#" : (props.url || "#")}
@@ -127,6 +188,7 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
               textDecoration: "none",
               fontWeight: "bold"
             }}
+            className={props.buttonCustomClass || ""}
           >
             {props.text || "Clique aqui"}
           </a>
@@ -136,10 +198,9 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
     case "divider":
       return (
         <div
-          style={{
-            backgroundColor: props.backgroundColor || "transparent",
-            padding: props.padding || "10px 20px"
-          }}
+          style={generateCommonStyles()}
+          className={generateClasses()}
+          id={props.customId || undefined}
         >
           <hr
             style={{
@@ -156,9 +217,12 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
       return (
         <div
           style={{
-            backgroundColor: props.backgroundColor || "transparent",
-            height: `${props.height || "20"}px`
+            ...generateCommonStyles(),
+            height: `${props.height || "20"}px`,
+            padding: "0"
           }}
+          className={generateClasses()}
+          id={props.customId || undefined}
         />
       );
 
