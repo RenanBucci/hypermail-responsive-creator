@@ -520,6 +520,25 @@ const renderStyleEditor = (component: EmailComponent, updateProps: (props: any) 
         </div>
       )}
 
+      {type === "button" && (
+        <div className="space-y-2 mb-4">
+          <Label>Cor do botão</Label>
+          <div className="flex items-center gap-2">
+            <Input
+              type="color"
+              value={props.buttonColor || "#4A6DA7"}
+              onChange={(e) => updateProps({ buttonColor: e.target.value })}
+              className="w-12 h-10 p-1"
+            />
+            <Input
+              value={props.buttonColor || "#4A6DA7"}
+              onChange={(e) => updateProps({ buttonColor: e.target.value })}
+              placeholder="#4A6DA7"
+            />
+          </div>
+        </div>
+      )}
+
       {type === "text" && (
         <div className="space-y-2 mb-4">
           <Label>Tamanho da fonte (px)</Label>
