@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useEmailBuilderStore } from "@/store/emailBuilderStore";
 import ComponentRenderer from "./ComponentRenderer";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,42 @@ const EmailPreview: React.FC = () => {
   } = useEmailBuilderStore();
   
   const [showRulers, setShowRulers] = useState(false);
+
+  // Memoize rendered components to prevent unnecessary re-renders
+  const renderedComponents = useMemo(() => {
+    if (components.length === 0) {
+      return (
+        <div className="h-[300px] flex items-center justify-center text-gray-400 text-sm">
+          <p>Adicione componentes para visualizar o preview do email</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="email-preview">
+        {components.map((component) => (
+          <React.Fragment key={component.id}>
+            {showRulers ? (
+              <div className="relative">
+                <div className="text-[8px] text-gray-500 absolute top-0 left-0 bg-blue-100 px-1 z-10">
+                  {component.type}
+                </div>
+                <ComponentRenderer component={component} isPreview={true} />
+              </div>
+            ) : (
+              <ComponentRenderer component={component} isPreview={true} />
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    );
+  }, [components, showRulers]);
+
+  const previewWrapperClass = useMemo(() => {
+    return `border rounded mx-auto transition-all bg-white overflow-auto ${
+      isPreviewMobile ? "w-[320px]" : "w-full"
+    }`;
+  }, [isPreviewMobile]);
 
   return (
     <div className="p-4">
@@ -59,11 +95,7 @@ const EmailPreview: React.FC = () => {
         </div>
       </div>
 
-      <div
-        className={`border rounded mx-auto transition-all bg-white overflow-auto ${
-          isPreviewMobile ? "w-[320px]" : "w-full"
-        }`}
-      >
+      <div className={previewWrapperClass}>
         <div className="p-2 bg-gray-100 border-b text-center text-xs text-gray-500">
           {isPreviewMobile ? "Mobile View (320px)" : "Desktop View"}
           <div className="text-center font-medium">{emailTitle}</div>
@@ -91,52 +123,17 @@ const EmailPreview: React.FC = () => {
                 </div>
               </div>
               <div className="ml-6 mt-6">
-                {components.length > 0 ? (
-                  <div className="email-preview">
-                    {components.map((component) => (
-                      <div key={component.id} className="relative">
-                        <div className="text-[8px] text-gray-500 absolute top-0 left-0 bg-blue-100 px-1">
-                          {component.type}
-                        </div>
-                        <ComponentRenderer
-                          component={component}
-                          isPreview={true}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="h-[300px] flex items-center justify-center text-gray-400 text-sm">
-                    <p>Adicione componentes para visualizar o preview do email</p>
-                  </div>
-                )}
+                {renderedComponents}
               </div>
             </>
           )}
 
-          {!showRulers && (
-            <>
-              {components.length > 0 ? (
-                <div className="email-preview">
-                  {components.map((component) => (
-                    <ComponentRenderer
-                      key={component.id}
-                      component={component}
-                      isPreview={true}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="h-[300px] flex items-center justify-center text-gray-400 text-sm">
-                  <p>Adicione componentes para visualizar o preview do email</p>
-                </div>
-              )}
-            </>
-          )}
+          {!showRulers && renderedComponents}
         </div>
       </div>
     </div>
   );
 };
 
-export default EmailPreview;
+// Use React.memo to prevent unnecessary re-renders
+export default React.memo(EmailPreview);

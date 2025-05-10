@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useMemo } from "react";
 import { EmailComponent } from "@/store/emailBuilderStore";
 import { LOGO_URL } from "../App";
 import { Instagram, Facebook } from "lucide-react";
@@ -9,14 +9,14 @@ interface ComponentRendererProps {
   isPreview?: boolean;
 }
 
-const ComponentRenderer: React.FC<ComponentRendererProps> = ({
+const ComponentRenderer: React.FC<ComponentRendererProps> = React.memo(({
   component,
   isPreview = false,
 }) => {
   const { type, props } = component;
 
-  // Função para gerar estilos comuns
-  const generateCommonStyles = () => {
+  // Função para gerar estilos comuns - memoizada para evitar recálculos
+  const commonStyles = useMemo(() => {
     let paddingValue = props.padding || "20px";
     
     // Se temos valores individuais de padding, usá-los
@@ -61,31 +61,33 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
     }
     
     return styles;
-  };
+  }, [props]);
 
-  // Função para gerar classes CSS
-  const generateClasses = () => {
-    let classes = "";
+  // Função para gerar classes CSS - memoizada
+  const classes = useMemo(() => {
+    let classStr = "";
     
     if (props.customClasses) {
-      classes += ` ${props.customClasses}`;
+      classStr += ` ${props.customClasses}`;
     }
     
-    return classes.trim();
-  };
+    return classStr.trim();
+  }, [props.customClasses]);
 
+  // Só renderiza o componente apropriado
   switch (type) {
     case "header":
       return (
         <div 
-          style={generateCommonStyles()}
-          className={generateClasses()}
+          style={commonStyles}
+          className={classes}
           id={props.customId || undefined}
         >
           <img
             src={props.logo || LOGO_URL}
             alt={props.companyName || "Company Logo"}
             className="mx-auto h-16 object-contain"
+            loading="lazy"
           />
           <h1 className="text-2xl font-bold mt-2 text-gray-800">
             {props.companyName || "qvaestvm"}
@@ -98,10 +100,10 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
       return (
         <div
           style={{
-            ...generateCommonStyles(),
+            ...commonStyles,
             color: props.textColor || "#555555",
           }}
-          className={`text-center ${generateClasses()}`}
+          className={`text-center ${classes}`}
           id={props.customId || undefined}
         >
           <div className="flex justify-center space-x-4 mb-3">
@@ -134,12 +136,12 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
       return (
         <div
           style={{
-            ...generateCommonStyles(),
+            ...commonStyles,
             color: props.textColor || "#333333",
             fontSize: `${props.fontSize || 16}px`,
             textAlign: props.alignment || "left" as any
           }}
-          className={generateClasses()}
+          className={classes}
           id={props.customId || undefined}
           dangerouslySetInnerHTML={{ __html: props.content || "Coloque seu texto aqui" }}
         />
@@ -149,16 +151,17 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
       return (
         <div
           style={{
-            ...generateCommonStyles(),
+            ...commonStyles,
             textAlign: props.alignment || "center" as any
           }}
-          className={generateClasses()}
+          className={classes}
           id={props.customId || undefined}
         >
           <img
             src={props.src || "https://via.placeholder.com/600x300"}
             alt={props.alt || "Image"}
             className="max-w-full h-auto mx-auto"
+            loading="lazy"
             style={{
               width: props.width ? `${props.width}%` : "100%",
               borderRadius: props.imageBorderRadius || undefined
@@ -171,10 +174,10 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
       return (
         <div
           style={{
-            ...generateCommonStyles(),
+            ...commonStyles,
             textAlign: props.alignment || "center" as any
           }}
-          className={generateClasses()}
+          className={classes}
           id={props.customId || undefined}
         >
           <a
@@ -198,8 +201,8 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
     case "divider":
       return (
         <div
-          style={generateCommonStyles()}
-          className={generateClasses()}
+          style={commonStyles}
+          className={classes}
           id={props.customId || undefined}
         >
           <hr
@@ -217,11 +220,11 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
       return (
         <div
           style={{
-            ...generateCommonStyles(),
+            ...commonStyles,
             height: `${props.height || "20"}px`,
             padding: "0"
           }}
-          className={generateClasses()}
+          className={classes}
           id={props.customId || undefined}
         />
       );
@@ -229,6 +232,8 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
     default:
       return <div>Componente não reconhecido</div>;
   }
-};
+});
+
+ComponentRenderer.displayName = 'ComponentRenderer';
 
 export default ComponentRenderer;
