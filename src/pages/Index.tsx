@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { LOGO_URL } from "../App";
+import { FilePdf, LayoutTemplate } from "lucide-react";
 
 const Index = () => {
   return (
@@ -24,28 +25,52 @@ const Index = () => {
       </header>
       
       <main className="flex-1 flex flex-col items-center justify-center p-6">
-        <div className="max-w-4xl w-full text-center">
-          <h2 className="text-4xl font-bold mb-4 text-gray-800">Crie emails HTML responsivos sem código</h2>
-          <p className="text-xl text-gray-600 mb-8">
-            Arraste, solte e personalize componentes para criar emails profissionais
-            que funcionam em todos os clientes de email.
-          </p>
-          <div className="flex justify-center gap-4">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700" asChild>
-              <Link to="/register">Comece Gratuitamente</Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link to="/login">Já tenho uma conta</Link>
-            </Button>
+        <h2 className="text-3xl font-bold mb-10 text-center text-gray-800">
+          Escolha um aplicativo
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
+          {/* HyperMail Card */}
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-1 border border-gray-100">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <LayoutTemplate className="h-8 w-8 text-blue-600" />
+                <h3 className="text-2xl font-bold text-gray-800">HyperMail</h3>
+              </div>
+              <p className="text-gray-600 mb-6">
+                Crie emails HTML responsivos sem código. Arraste, solte e personalize componentes para emails profissionais.
+              </p>
+              <Button size="lg" className="w-full" asChild>
+                <Link to="/app">Iniciar HyperMail</Link>
+              </Button>
+            </div>
+            <div className="bg-gray-50 p-4 border-t">
+              <div className="text-sm text-gray-500 text-center">
+                Editor de email HTML drag-and-drop
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div className="mt-16 bg-white rounded-xl shadow-xl overflow-hidden max-w-5xl w-full transform transition-all hover:scale-105">
-          <img 
-            src="/lovable-uploads/301ea117-dbd5-4e28-962a-a5814004058a.png" 
-            alt="HyperMail Preview" 
-            className="w-full h-auto"
-          />
+          
+          {/* PDF Proposal Creator Card */}
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-1 border border-gray-100">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <FilePdf className="h-8 w-8 text-blue-600" />
+                <h3 className="text-2xl font-bold text-gray-800">Propostas PDF</h3>
+              </div>
+              <p className="text-gray-600 mb-6">
+                Gere propostas profissionais em PDF com a ajuda de IA. Crie documentos personalizados em minutos.
+              </p>
+              <Button size="lg" className="w-full" asChild>
+                <Link to="/proposal">Criar Proposta</Link>
+              </Button>
+            </div>
+            <div className="bg-gray-50 p-4 border-t">
+              <div className="text-sm text-gray-500 text-center">
+                Gerador de propostas com IA
+              </div>
+            </div>
+          </div>
         </div>
       </main>
       

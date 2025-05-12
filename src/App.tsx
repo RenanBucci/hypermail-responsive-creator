@@ -16,6 +16,7 @@ const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const AppPage = lazy(() => import("./pages/App"));
+const ProposalCreator = lazy(() => import("./pages/ProposalCreator"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Loading fallback
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/app" element={<AppPage />} />
+            <Route path="/proposal" element={<ProposalCreator />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
