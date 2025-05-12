@@ -1,7 +1,7 @@
 
 import { useEffect, useRef } from "react";
 import { useProposalStore } from "@/store/proposalStore";
-import { FilePdf } from "lucide-react";
+import { FileText } from "lucide-react"; // Changed from FilePdf to FileText which is available
 
 const ProposalPreview = () => {
   const { title, company, messages } = useProposalStore();
@@ -147,7 +147,7 @@ const ProposalPreview = () => {
     >
       {messages.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-full text-gray-500">
-          <FilePdf className="h-12 w-12 mb-4 opacity-20" />
+          <FileText className="h-12 w-12 mb-4 opacity-20" /> 
           <p className="text-center">
             Your proposal preview will appear here.<br />
             Start a conversation to generate content.

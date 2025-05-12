@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { LOGO_URL } from "../App";
-import { FilePdf, LayoutTemplate } from "lucide-react";
+import { FileText, LayoutTemplate } from "lucide-react"; // Changed from FilePdf to FileText
 
 const Index = () => {
   return (
@@ -55,7 +55,7 @@ const Index = () => {
           <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-1 border border-gray-100">
             <div className="p-6">
               <div className="flex items-center gap-3 mb-4">
-                <FilePdf className="h-8 w-8 text-blue-600" />
+                <FileText className="h-8 w-8 text-blue-600" /> 
                 <h3 className="text-2xl font-bold text-gray-800">Propostas PDF</h3>
               </div>
               <p className="text-gray-600 mb-6">

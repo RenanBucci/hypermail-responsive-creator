@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { FilePdf, MessageSquare, Send, Settings, Webhook } from "lucide-react";
+import { FileText, MessageSquare, Send, Settings, Webhook } from "lucide-react"; // Changed FilePdf to FileText
 import { debounce } from "@/utils/performance";
 import { useProposalStore } from "@/store/proposalStore";
 import ProposalPreview from "@/components/proposal/ProposalPreview";
@@ -108,7 +107,7 @@ const ProposalCreator = () => {
       <header className="bg-white border-b shadow-sm p-4">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <FilePdf className="h-6 w-6 text-blue-600" />
+            <FileText className="h-6 w-6 text-blue-600" /> 
             <h1 className="text-2xl font-bold text-blue-600">Proposal Creator</h1>
           </div>
           
@@ -122,7 +121,7 @@ const ProposalCreator = () => {
               Webhook
             </Button>
             <Button onClick={handleExportPDF} className="flex items-center gap-2">
-              <FilePdf className="h-4 w-4" />
+              <FileText className="h-4 w-4" /> 
               Export PDF
             </Button>
           </div>
@@ -243,7 +242,7 @@ const ProposalCreator = () => {
         <div className="bg-white rounded-lg shadow-sm h-[calc(100vh-200px)] overflow-hidden">
           <div className="p-4 border-b">
             <h2 className="text-lg font-medium flex items-center gap-2">
-              <FilePdf className="h-5 w-5 text-blue-600" />
+              <FileText className="h-5 w-5 text-blue-600" />
               Proposal Preview
             </h2>
           </div>
