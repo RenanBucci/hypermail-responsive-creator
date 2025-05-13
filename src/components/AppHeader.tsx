@@ -8,24 +8,26 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LOGO_URL } from "../App";
-import { FileText, LayoutTemplate, ChevronDown, Settings, LogOut, User, Moon, Sun, Menu } from 'lucide-react';
+import { APP_NAME, LOGO_URL } from "../App";
+import { FileText, LayoutTemplate, ChevronDown, Settings, LogOut, User, Moon, Sun, Menu, ArrowLeft } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useThemeStore } from '@/store/themeStore';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 interface AppHeaderProps {
   showAuth?: boolean;
   showMenu?: boolean;
+  backTo?: string;
 }
 
-export function AppHeader({ showAuth = true, showMenu = true }: AppHeaderProps) {
+export function AppHeader({ showAuth = true, showMenu = true, backTo }: AppHeaderProps) {
   const location = useLocation();
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
-  const [theme, setTheme] = React.useState<'light' | 'dark'>('light');
+  const { theme, setTheme } = useThemeStore();
 
   const toggleTheme = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
-    // In a real implementation, this would update the theme in localStorage or context
   };
 
   const isActive = (path: string) => {
@@ -33,37 +35,73 @@ export function AppHeader({ showAuth = true, showMenu = true }: AppHeaderProps) 
   };
 
   const navigationItems = [
-    { name: "Home", path: "/", icon: null },
-    { name: "Email Builder", path: "/app", icon: <LayoutTemplate className="h-4 w-4 mr-2" /> },
-    { name: "Propostas", path: "/proposal", icon: <FileText className="h-4 w-4 mr-2" /> },
+    { 
+      name: "Email Builder", 
+      path: "/app", 
+      icon: <LayoutTemplate className="h-4 w-4 mr-2" />,
+      description: "Crie emails HTML responsivos com editor visual" 
+    },
+    { 
+      name: "Propostas", 
+      path: "/proposal", 
+      icon: <FileText className="h-4 w-4 mr-2" />,
+      description: "Gere propostas comerciais profissionais" 
+    },
   ];
 
   return (
-    <header className="bg-white border-b shadow-sm">
+    <header className="bg-white border-b shadow-sm dark:bg-gray-900 dark:border-gray-800 transition-colors">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo and desktop navigation */}
           <div className="flex items-center">
+            {backTo ? (
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                asChild
+                className="mr-2"
+                title="Voltar"
+              >
+                <Link to={backTo}>
+                  <ArrowLeft className="h-5 w-5" />
+                </Link>
+              </Button>
+            ) : null}
+            
             <Link to="/" className="flex items-center gap-2 mr-8">
-              <img src={LOGO_URL} alt="HyperMail" className="h-8 w-auto" />
-              <h1 className="text-xl font-bold text-blue-600 hidden sm:block">HyperMail</h1>
+              <img src={LOGO_URL} alt={APP_NAME} className="h-8 w-auto" />
+              <h1 className="text-xl font-bold text-blue-600 dark:text-blue-400 hidden sm:block">
+                {APP_NAME}
+              </h1>
             </Link>
             
             {showMenu && !isMobile && (
               <nav className="hidden md:flex space-x-1">
                 {navigationItems.map((item) => (
-                  <Button
-                    key={item.path}
-                    variant={isActive(item.path) ? "default" : "ghost"}
-                    asChild
-                    className={isActive(item.path) ? "bg-blue-50 text-blue-700" : ""}
-                    size="sm"
-                  >
-                    <Link to={item.path} className="flex items-center">
-                      {item.icon}
-                      {item.name}
-                    </Link>
-                  </Button>
+                  <HoverCard key={item.path}>
+                    <HoverCardTrigger asChild>
+                      <Button
+                        variant={isActive(item.path) ? "default" : "ghost"}
+                        asChild
+                        className={isActive(item.path) ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" : ""}
+                        size="sm"
+                      >
+                        <Link to={item.path} className="flex items-center">
+                          {item.icon}
+                          {item.name}
+                        </Link>
+                      </Button>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-64">
+                      <div className="space-y-1">
+                        <h4 className="text-sm font-semibold">{item.name}</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          {item.description}
+                        </p>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
                 ))}
               </nav>
             )}
@@ -75,7 +113,8 @@ export function AppHeader({ showAuth = true, showMenu = true }: AppHeaderProps) 
               variant="ghost" 
               size="icon"
               onClick={toggleTheme}
-              title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+              title={theme === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'}
+              className="hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               {theme === 'light' ? <Moon className="h-[1.2rem] w-[1.2rem]" /> : <Sun className="h-[1.2rem] w-[1.2rem]" />}
             </Button>
@@ -95,7 +134,11 @@ export function AppHeader({ showAuth = true, showMenu = true }: AppHeaderProps) 
             {/* User menu (if logged in) */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
                   <User className="h-[1.2rem] w-[1.2rem]" />
                 </Button>
               </DropdownMenuTrigger>
@@ -125,7 +168,7 @@ export function AppHeader({ showAuth = true, showMenu = true }: AppHeaderProps) 
                 variant="ghost" 
                 size="icon"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden"
+                className="md:hidden hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 <Menu className="h-[1.2rem] w-[1.2rem]" />
               </Button>
@@ -135,13 +178,17 @@ export function AppHeader({ showAuth = true, showMenu = true }: AppHeaderProps) 
         
         {/* Mobile menu */}
         {showMenu && isMobile && mobileMenuOpen && (
-          <nav className="md:hidden py-3 border-t">
+          <nav className="md:hidden py-3 border-t dark:border-gray-800">
             <ul className="space-y-2">
               {navigationItems.map((item) => (
                 <li key={item.path}>
                   <Link 
                     to={item.path}
-                    className={`flex items-center p-2 rounded-md ${isActive(item.path) ? 'bg-blue-50 text-blue-700' : ''}`}
+                    className={`flex items-center p-2 rounded-md ${
+                      isActive(item.path) 
+                      ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' 
+                      : ''
+                    }`}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {item.icon}
@@ -149,11 +196,23 @@ export function AppHeader({ showAuth = true, showMenu = true }: AppHeaderProps) 
                   </Link>
                 </li>
               ))}
+              
+              {/* Settings in mobile menu */}
+              <li>
+                <Link 
+                  to="/settings"
+                  className="flex items-center p-2 rounded-md"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  <span>Configurações</span>
+                </Link>
+              </li>
             </ul>
             
             {/* Authentication buttons on mobile */}
             {showAuth && (
-              <div className="mt-4 pt-4 border-t grid grid-cols-2 gap-2">
+              <div className="mt-4 pt-4 border-t dark:border-gray-800 grid grid-cols-2 gap-2">
                 <Button variant="outline" asChild size="sm">
                   <Link to="/login">Entrar</Link>
                 </Button>
