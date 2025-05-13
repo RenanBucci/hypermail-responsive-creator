@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LOGO_URL } from "../App";
 import { FileText, LayoutTemplate, ChevronDown, Settings, LogOut, User, Moon, Sun, Menu } from 'lucide-react';
-import { useMediaQuery } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface AppHeaderProps {
   showAuth?: boolean;
@@ -19,7 +19,7 @@ interface AppHeaderProps {
 
 export function AppHeader({ showAuth = true, showMenu = true }: AppHeaderProps) {
   const location = useLocation();
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [theme, setTheme] = React.useState<'light' | 'dark'>('light');
 
