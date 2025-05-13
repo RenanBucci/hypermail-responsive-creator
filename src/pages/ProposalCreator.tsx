@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -5,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { FileText, MessageSquare, Send, Settings, Webhook } from "lucide-react"; // Changed FilePdf to FileText
+import { FileText, MessageSquare, Send, Settings, Webhook } from "lucide-react";
 import { debounce } from "@/utils/performance";
 import { useProposalStore } from "@/store/proposalStore";
 import ProposalPreview from "@/components/proposal/ProposalPreview";
@@ -19,7 +20,7 @@ const ProposalCreator = () => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { messages, addMessage, title, setTitle, company, setCompany } = useProposalStore();
 
-  // Auto scroll to bottom of chat when new messages arrive
+  // Auto scroll para o final do chat quando chegam novas mensagens
   useEffect(() => {
     if (chatContainerRef.current) {
       const { scrollHeight } = chatContainerRef.current;
@@ -34,11 +35,11 @@ const ProposalCreator = () => {
     e.preventDefault();
     
     if (!message.trim()) {
-      toast.error("Please enter a message");
+      toast.error("Por favor, digite uma mensagem");
       return;
     }
 
-    // Add user message to state
+    // Adiciona mensagem do usuário ao estado
     addMessage({
       id: Date.now().toString(),
       content: message,
@@ -49,17 +50,17 @@ const ProposalCreator = () => {
     setIsGenerating(true);
     
     try {
-      // This is where you'd connect to an actual AI service
-      // For now, we'll simulate a response
+      // Aqui seria a conexão com um serviço de IA real
+      // Por enquanto, vamos simular uma resposta
       setTimeout(() => {
         addMessage({
           id: (Date.now() + 1).toString(),
-          content: `Here's a proposal draft for ${company || "your company"} based on your request: "${message}".\n\nI've structured it with an introduction, scope of work, timeline, pricing, and terms. You can see the preview on the right panel.`,
+          content: `Aqui está um rascunho de proposta para ${company || "sua empresa"} baseado no seu pedido: "${message}".\n\nEstruturei com uma introdução, escopo de trabalho, cronograma, preços e condições. Você pode ver a prévia no painel à direita.`,
           role: "assistant",
           timestamp: new Date().toISOString()
         });
         
-        // If webhook URL is set, trigger it
+        // Se a URL do webhook estiver definida, ativa-o
         if (webhookUrl) {
           triggerWebhook();
         }
@@ -68,8 +69,8 @@ const ProposalCreator = () => {
         setMessage("");
       }, 1500);
     } catch (error) {
-      console.error("Error generating proposal:", error);
-      toast.error("Failed to generate proposal");
+      console.error("Erro ao gerar proposta:", error);
+      toast.error("Falha ao gerar proposta");
       setIsGenerating(false);
     }
   };
@@ -79,7 +80,7 @@ const ProposalCreator = () => {
       await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        mode: "no-cors", // Handle CORS issues
+        mode: "no-cors", // Lidar com problemas de CORS
         body: JSON.stringify({
           title: title,
           company: company,
@@ -88,27 +89,27 @@ const ProposalCreator = () => {
         })
       });
       
-      toast.success("Webhook triggered successfully");
+      toast.success("Webhook acionado com sucesso");
     } catch (error) {
-      console.error("Error triggering webhook:", error);
-      toast.error("Failed to trigger webhook");
+      console.error("Erro ao acionar webhook:", error);
+      toast.error("Falha ao acionar webhook");
     }
   };
 
   const handleExportPDF = () => {
-    // In a real implementation, this would generate and download the PDF
-    toast.success("Exporting PDF...");
-    toast.info("This functionality would generate and download the actual PDF file");
+    // Em uma implementação real, isso geraria e baixaria o PDF
+    toast.success("Exportando PDF...");
+    toast.info("Esta funcionalidade geraria e baixaria o arquivo PDF real");
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
+      {/* Cabeçalho */}
       <header className="bg-white border-b shadow-sm p-4">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
             <FileText className="h-6 w-6 text-blue-600" /> 
-            <h1 className="text-2xl font-bold text-blue-600">Proposal Creator</h1>
+            <h1 className="text-2xl font-bold text-blue-600">Criador de Propostas</h1>
           </div>
           
           <div className="flex items-center gap-4">
@@ -122,13 +123,13 @@ const ProposalCreator = () => {
             </Button>
             <Button onClick={handleExportPDF} className="flex items-center gap-2">
               <FileText className="h-4 w-4" /> 
-              Export PDF
+              Exportar PDF
             </Button>
           </div>
         </div>
       </header>
 
-      {/* Webhook Settings */}
+      {/* Configurações de Webhook */}
       <Collapsible
         open={webhookSettingsOpen}
         onOpenChange={setWebhookSettingsOpen}
@@ -138,47 +139,47 @@ const ProposalCreator = () => {
           <div className="flex items-center justify-between cursor-pointer">
             <div className="flex items-center gap-2">
               <Settings className="h-5 w-5 text-gray-600" />
-              <h2 className="text-lg font-medium">Webhook Settings</h2>
+              <h2 className="text-lg font-medium">Configurações de Webhook</h2>
             </div>
           </div>
         </CollapsibleTrigger>
         <CollapsibleContent className="mt-4 space-y-4">
           <div className="grid gap-2">
-            <Label htmlFor="webhook-url">n8n Webhook URL</Label>
+            <Label htmlFor="webhook-url">URL do Webhook n8n</Label>
             <Input
               id="webhook-url"
-              placeholder="https://your-n8n-instance.com/webhook/..."
+              placeholder="https://seu-servidor-n8n.com/webhook/..."
               value={webhookUrl}
               onChange={(e) => setWebhookUrl(e.target.value)}
               className="w-full"
             />
             <p className="text-xs text-gray-500">
-              Enter your n8n webhook URL to trigger workflows when proposals are generated.
+              Insira a URL do seu webhook n8n para acionar fluxos de trabalho quando as propostas forem geradas.
             </p>
           </div>
         </CollapsibleContent>
       </Collapsible>
 
-      {/* Main Content */}
+      {/* Conteúdo Principal */}
       <div className="flex-1 container mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 p-4 mt-4">
-        {/* Chat Panel */}
+        {/* Painel de Chat */}
         <div className="flex flex-col bg-white rounded-lg shadow-sm h-[calc(100vh-200px)] overflow-hidden">
           <div className="p-4 border-b">
             <div className="space-y-4">
               <div className="grid gap-2">
-                <Label htmlFor="proposal-title">Proposal Title</Label>
+                <Label htmlFor="proposal-title">Título da Proposta</Label>
                 <Input
                   id="proposal-title"
-                  placeholder="Project Proposal for Client X"
+                  placeholder="Proposta de Projeto para Cliente X"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="company-name">Company Name</Label>
+                <Label htmlFor="company-name">Nome da Empresa</Label>
                 <Input
                   id="company-name"
-                  placeholder="Your Company Name"
+                  placeholder="Nome da Sua Empresa"
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
                 />
@@ -194,8 +195,8 @@ const ProposalCreator = () => {
               <div className="flex flex-col items-center justify-center h-full text-gray-500">
                 <MessageSquare className="h-12 w-12 mb-4 opacity-20" />
                 <p className="text-center">
-                  Start a conversation to generate your proposal.<br />
-                  Describe what you need and our AI will help you create it.
+                  Inicie uma conversa para gerar sua proposta.<br />
+                  Descreva o que você precisa e nossa IA irá ajudá-lo a criá-la.
                 </p>
               </div>
             ) : (
@@ -210,7 +211,7 @@ const ProposalCreator = () => {
                   <div className="h-2 w-2 bg-blue-400 rounded-full"></div>
                   <div className="h-2 w-2 bg-blue-400 rounded-full"></div>
                 </div>
-                <span>Generating proposal...</span>
+                <span>Gerando proposta...</span>
               </div>
             )}
           </div>
@@ -218,7 +219,7 @@ const ProposalCreator = () => {
           <form onSubmit={handleSendMessage} className="p-4 border-t">
             <div className="flex gap-2">
               <Textarea
-                placeholder="Describe the proposal you need..."
+                placeholder="Descreva a proposta que você precisa..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 className="flex-1 min-h-[80px] resize-none"
@@ -238,12 +239,12 @@ const ProposalCreator = () => {
           </form>
         </div>
         
-        {/* Preview Panel */}
+        {/* Painel de Prévia */}
         <div className="bg-white rounded-lg shadow-sm h-[calc(100vh-200px)] overflow-hidden">
           <div className="p-4 border-b">
             <h2 className="text-lg font-medium flex items-center gap-2">
               <FileText className="h-5 w-5 text-blue-600" />
-              Proposal Preview
+              Pré-visualização da Proposta
             </h2>
           </div>
           

@@ -2,11 +2,12 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { LOGO_URL } from "../App";
-import { FileText, LayoutTemplate, ArrowRight, Star, CheckCircle } from "lucide-react"; // Added more icons
+import { FileText, LayoutTemplate, ArrowRight, Shield, Settings, Clipboard } from "lucide-react";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
       <header className="bg-white shadow-sm p-4">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
@@ -24,208 +25,187 @@ const Index = () => {
         </div>
       </header>
       
-      <main className="flex-1">
-        {/* Hero Section */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 py-16 px-4">
-          <div className="container mx-auto max-w-6xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              <div className="text-white">
-                <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                  Crie conteúdo profissional com facilidade
-                </h2>
-                <p className="text-blue-100 text-lg mb-8">
-                  Ferramentas intuitivas para criar emails HTML responsivos e propostas em PDF que impressionam seus clientes.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Button size="lg" className="bg-white text-blue-700 hover:bg-blue-50" asChild>
-                    <Link to="/register">Comece grátis <ArrowRight className="ml-2 h-5 w-5" /></Link>
-                  </Button>
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-blue-700" asChild>
-                    <Link to="/login">Faça login</Link>
-                  </Button>
-                </div>
-              </div>
-              <div className="hidden md:flex justify-center">
-                <div className="bg-white/10 backdrop-blur-sm p-6 rounded-2xl shadow-2xl border border-white/20 transform rotate-3">
-                  <img 
-                    src="/placeholder.svg" 
-                    alt="HyperMail Preview" 
-                    className="rounded-lg shadow-lg"
-                    width="500"
-                    height="300"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+      <main className="flex-1 container mx-auto py-8 px-4">
+        {/* Cabeçalho de boas-vindas */}
+        <div className="bg-blue-600 text-white rounded-lg p-6 mb-8 shadow-md">
+          <h2 className="text-2xl font-bold mb-2">Bem-vindo ao sistema interno</h2>
+          <p className="text-blue-100">
+            Utilize nossas ferramentas para criar emails HTML e propostas profissionais.
+          </p>
         </div>
 
-        {/* Features Section */}
-        <div className="py-16 px-4 bg-white">
-          <div className="container mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold mb-12 text-center text-gray-800">
-              Nossas soluções
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {/* HyperMail Card */}
-              <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-2 border border-gray-100 duration-300">
-                <div className="p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-3 rounded-full bg-blue-100">
-                      <LayoutTemplate className="h-8 w-8 text-blue-600" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-gray-800">HyperMail</h3>
-                  </div>
-                  <p className="text-gray-600 mb-6">
-                    Crie emails HTML responsivos sem código. Arraste, solte e personalize componentes para emails profissionais.
-                  </p>
-                  
-                  <div className="mb-6">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle className="h-5 w-5 text-green-500" />
-                      <span className="text-gray-700">Editor visual drag-and-drop</span>
-                    </div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle className="h-5 w-5 text-green-500" />
-                      <span className="text-gray-700">Templates personalizáveis</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="h-5 w-5 text-green-500" />
-                      <span className="text-gray-700">Compatível com todos os clientes de email</span>
-                    </div>
-                  </div>
-                  
-                  <Button size="lg" className="w-full" asChild>
-                    <Link to="/app">Iniciar HyperMail</Link>
-                  </Button>
-                </div>
-                <div className="bg-gray-50 p-4 border-t">
-                  <div className="text-sm text-gray-500 text-center">
-                    Editor de email HTML drag-and-drop
-                  </div>
-                </div>
+        {/* Atalhos rápidos */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <Card className="bg-white hover:shadow-md transition-shadow">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Shield className="h-5 w-5 text-blue-500" />
+                Acesso rápido
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600 mb-4">
+                Acesse seus aplicativos mais usados diretamente
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <Button variant="outline" size="sm" asChild className="justify-start">
+                  <Link to="/app" className="flex items-center gap-2">
+                    <LayoutTemplate className="h-4 w-4" />
+                    Email
+                  </Link>
+                </Button>
+                <Button variant="outline" size="sm" asChild className="justify-start">
+                  <Link to="/proposal" className="flex items-center gap-2">
+                    <FileText className="h-4 w-4" />
+                    Propostas
+                  </Link>
+                </Button>
+                <Button variant="outline" size="sm" asChild className="justify-start">
+                  <Link to="/settings" className="flex items-center gap-2">
+                    <Settings className="h-4 w-4" />
+                    Configurações
+                  </Link>
+                </Button>
+                <Button variant="outline" size="sm" asChild className="justify-start">
+                  <Link to="/help" className="flex items-center gap-2">
+                    <Clipboard className="h-4 w-4" />
+                    Tutoriais
+                  </Link>
+                </Button>
               </div>
-              
-              {/* PDF Proposal Creator Card */}
-              <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-2 border border-gray-100 duration-300">
-                <div className="p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-3 rounded-full bg-blue-100">
-                      <FileText className="h-8 w-8 text-blue-600" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-gray-800">Propostas PDF</h3>
-                  </div>
-                  <p className="text-gray-600 mb-6">
-                    Gere propostas profissionais em PDF com a ajuda de IA. Crie documentos personalizados em minutos.
-                  </p>
-                  
-                  <div className="mb-6">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle className="h-5 w-5 text-green-500" />
-                      <span className="text-gray-700">Assistente de IA integrado</span>
-                    </div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle className="h-5 w-5 text-green-500" />
-                      <span className="text-gray-700">Preview em tempo real</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="h-5 w-5 text-green-500" />
-                      <span className="text-gray-700">Exportação em PDF de alta qualidade</span>
-                    </div>
-                  </div>
-                  
-                  <Button size="lg" className="w-full" asChild>
-                    <Link to="/proposal">Criar Proposta</Link>
-                  </Button>
-                </div>
-                <div className="bg-gray-50 p-4 border-t">
-                  <div className="text-sm text-gray-500 text-center">
-                    Gerador de propostas com IA
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-white hover:shadow-md transition-shadow">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <LayoutTemplate className="h-5 w-5 text-blue-500" />
+                Construtor de Email
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600 mb-4">
+                Crie emails HTML responsivos e profissionais com nosso editor visual
+              </p>
+              <Button asChild className="w-full">
+                <Link to="/app" className="flex items-center gap-2">
+                  Acessar <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-white hover:shadow-md transition-shadow">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <FileText className="h-5 w-5 text-blue-500" />
+                Gerador de Propostas
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600 mb-4">
+                Crie propostas profissionais em PDF com a ajuda da nossa IA
+              </p>
+              <Button asChild className="w-full">
+                <Link to="/proposal" className="flex items-center gap-2">
+                  Acessar <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
         
-        {/* Testimonials */}
-        <div className="py-16 px-4 bg-gray-50">
-          <div className="container mx-auto max-w-5xl">
-            <h2 className="text-3xl font-bold mb-12 text-center text-gray-800">
-              O que nossos clientes dizem
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-white p-6 rounded-lg shadow border border-gray-100">
-                  <div className="flex mb-4">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="h-5 w-5 text-yellow-400 fill-yellow-400" />
-                    ))}
-                  </div>
-                  <p className="text-gray-600 mb-6">
-                    "Esta ferramenta revolucionou nossa maneira de trabalhar. Agora conseguimos criar propostas profissionais e emails em questão de minutos."
-                  </p>
-                  <div className="flex items-center">
-                    <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold mr-3">
-                      {String.fromCharCode(64 + i)}
+        {/* Estatísticas e status */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="bg-white hover:shadow-md transition-shadow">
+            <CardHeader>
+              <CardTitle>Atividade Recente</CardTitle>
+              <CardDescription>Suas últimas ações no sistema</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2">
+                <li className="p-2 border-b">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-blue-100 p-2 rounded">
+                      <FileText className="h-5 w-5 text-blue-600" />
                     </div>
                     <div>
-                      <p className="font-medium">Cliente {i}</p>
-                      <p className="text-gray-500 text-sm">Empresa {i}</p>
+                      <p className="font-medium">Proposta criada</p>
+                      <p className="text-sm text-gray-500">Hoje, 10:30</p>
                     </div>
                   </div>
+                </li>
+                <li className="p-2 border-b">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-blue-100 p-2 rounded">
+                      <LayoutTemplate className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Email enviado</p>
+                      <p className="text-sm text-gray-500">Ontem, 15:45</p>
+                    </div>
+                  </div>
+                </li>
+                <li className="p-2">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-blue-100 p-2 rounded">
+                      <FileText className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Proposta exportada</p>
+                      <p className="text-sm text-gray-500">Ontem, 09:15</p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </CardContent>
+            <CardFooter>
+              <Button variant="outline" size="sm" className="w-full">Ver todas as atividades</Button>
+            </CardFooter>
+          </Card>
+          
+          <Card className="bg-white hover:shadow-md transition-shadow">
+            <CardHeader>
+              <CardTitle>Sistema</CardTitle>
+              <CardDescription>Status e informações</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                  <span>Versão do sistema</span>
+                  <span className="font-medium">2.1.0</span>
                 </div>
-              ))}
-            </div>
-          </div>
+                <div className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                  <span>API</span>
+                  <span className="font-medium text-green-600">Online</span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                  <span>Último backup</span>
+                  <span className="font-medium">Hoje às 03:00</span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                  <span>Usuários ativos</span>
+                  <span className="font-medium">23</span>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button variant="outline" size="sm" className="w-full">Status do sistema</Button>
+            </CardFooter>
+          </Card>
         </div>
       </main>
       
       <footer className="bg-white p-6 border-t">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <img src={LOGO_URL} alt="HyperMail" className="h-6 w-auto" />
-                <h3 className="font-bold text-blue-600">HyperMail</h3>
-              </div>
-              <p className="text-gray-500 text-sm">
-                Soluções inteligentes para comunicação profissional e propostas comerciais.
-              </p>
+        <div className="container mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center gap-2 mb-4 md:mb-0">
+              <img src={LOGO_URL} alt="HyperMail" className="h-6 w-auto" />
+              <h3 className="font-bold text-blue-600">HyperMail</h3>
             </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Produtos</h4>
-              <ul className="space-y-2 text-gray-600">
-                <li><Link to="/app" className="hover:text-blue-600">HyperMail</Link></li>
-                <li><Link to="/proposal" className="hover:text-blue-600">Propostas PDF</Link></li>
-              </ul>
+            <div className="text-sm text-gray-500">
+              <p>&copy; {new Date().getFullYear()} HyperMail - Sistema Interno v2.1.0</p>
             </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Recursos</h4>
-              <ul className="space-y-2 text-gray-600">
-                <li><a href="#" className="hover:text-blue-600">Documentação</a></li>
-                <li><a href="#" className="hover:text-blue-600">Tutoriais</a></li>
-                <li><a href="#" className="hover:text-blue-600">Blog</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Empresa</h4>
-              <ul className="space-y-2 text-gray-600">
-                <li><a href="#" className="hover:text-blue-600">Sobre nós</a></li>
-                <li><a href="#" className="hover:text-blue-600">Contato</a></li>
-                <li><a href="#" className="hover:text-blue-600">Termos</a></li>
-                <li><a href="#" className="hover:text-blue-600">Privacidade</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="mt-8 pt-4 border-t text-center text-gray-600">
-            <p>&copy; {new Date().getFullYear()} HyperMail - Todos os direitos reservados</p>
           </div>
         </div>
       </footer>

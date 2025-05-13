@@ -8,10 +8,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 
-// Save the logo URL for global access
+// Salva a URL do logo para acesso global
 export const LOGO_URL = "/lovable-uploads/e310737e-a3e5-4922-869d-209714dbc556.png";
 
-// Lazy load page components
+// Lazy load dos componentes de página
 const Index = lazy(() => import("./pages/Index"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
@@ -20,7 +20,7 @@ const AppPage = lazy(() => import("./pages/App"));
 const ProposalCreator = lazy(() => import("./pages/ProposalCreator"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-// Loading fallback
+// Fallback de carregamento
 const LoadingFallback = () => (
   <div className="flex items-center justify-center min-h-screen">
     <div className="flex flex-col items-center">
@@ -30,26 +30,26 @@ const LoadingFallback = () => (
   </div>
 );
 
-// Create QueryClient with performance optimizations
+// Cria QueryClient com otimizações de desempenho
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 5 * 60 * 1000, // 5 minutos
       retry: 1,
-      gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+      gcTime: 10 * 60 * 1000, // 10 minutos (formerly cacheTime)
     },
   },
 });
 
-// Use a route structure to determine which routes need the AppHeader
+// Usa uma estrutura de rotas para determinar quais rotas precisam do AppHeader
 const routes = [
   { path: '/', element: <Index />, showHeader: false },
   { path: '/login', element: <Login />, showHeader: true, hideAuthButtons: true },
   { path: '/register', element: <Register />, showHeader: true, hideAuthButtons: true },
   { path: '/forgot-password', element: <ForgotPassword />, showHeader: true, hideAuthButtons: true },
   { path: '/app', element: <AppPage />, showHeader: true },
-  { path: '/proposal', element: <ProposalCreator />, showHeader: true },
+  { path: '/proposal', element: <ProposalCreator />, showHeader: false },
   { path: '*', element: <NotFound />, showHeader: true },
 ];
 
