@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { APP_NAME, LOGO_URL } from "../App";
-import { FileText, LayoutTemplate, ChevronDown, Settings, LogOut, User, Moon, Sun, Menu, ArrowLeft } from 'lucide-react';
+import { FileText, LayoutTemplate, Settings, LogOut, User, Moon, Sun, Menu, ArrowLeft } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useThemeStore } from '@/store/themeStore';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
@@ -20,7 +20,7 @@ interface AppHeaderProps {
   backTo?: string;
 }
 
-export function AppHeader({ showAuth = true, showMenu = true, backTo }: AppHeaderProps) {
+export function AppHeader({ showAuth = false, showMenu = true, backTo }: AppHeaderProps) {
   const location = useLocation();
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
@@ -36,7 +36,7 @@ export function AppHeader({ showAuth = true, showMenu = true, backTo }: AppHeade
 
   const navigationItems = [
     { 
-      name: "Email Builder", 
+      name: "Editor de Email", 
       path: "/app", 
       icon: <LayoutTemplate className="h-4 w-4 mr-2" />,
       description: "Crie emails HTML responsivos com editor visual" 
@@ -119,18 +119,6 @@ export function AppHeader({ showAuth = true, showMenu = true, backTo }: AppHeade
               {theme === 'light' ? <Moon className="h-[1.2rem] w-[1.2rem]" /> : <Sun className="h-[1.2rem] w-[1.2rem]" />}
             </Button>
             
-            {/* Authentication buttons */}
-            {showAuth && (
-              <div className="hidden md:flex items-center gap-2">
-                <Button variant="outline" asChild size="sm">
-                  <Link to="/login">Entrar</Link>
-                </Button>
-                <Button asChild size="sm">
-                  <Link to="/register">Registrar</Link>
-                </Button>
-              </div>
-            )}
-            
             {/* User menu (if logged in) */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -209,18 +197,6 @@ export function AppHeader({ showAuth = true, showMenu = true, backTo }: AppHeade
                 </Link>
               </li>
             </ul>
-            
-            {/* Authentication buttons on mobile */}
-            {showAuth && (
-              <div className="mt-4 pt-4 border-t dark:border-gray-800 grid grid-cols-2 gap-2">
-                <Button variant="outline" asChild size="sm">
-                  <Link to="/login">Entrar</Link>
-                </Button>
-                <Button asChild size="sm">
-                  <Link to="/register">Registrar</Link>
-                </Button>
-              </div>
-            )}
           </nav>
         )}
       </div>

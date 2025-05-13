@@ -26,6 +26,9 @@ import SavedEmailsPopover from "@/components/SavedEmailsPopover";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
+import { APP_NAME, LOGO_URL } from "../App";
 
 // Component types que podem ser arrastados
 const DRAG_COMPONENTS = [
@@ -35,6 +38,15 @@ const DRAG_COMPONENTS = [
   { id: "divider", label: "Divisor", icon: "➖" },
   { id: "spacer", label: "Espaçador", icon: "↕️" },
   { id: "columns", label: "Colunas", icon: "▣" },
+  { id: "social", label: "Redes Sociais", icon: "🔗" },
+];
+
+const SOCIAL_OPTIONS = [
+  { id: "facebook", label: "Facebook" },
+  { id: "instagram", label: "Instagram" },
+  { id: "twitter", label: "X / Twitter" },
+  { id: "linkedin", label: "LinkedIn" },
+  { id: "youtube", label: "YouTube" },
 ];
 
 const AppPage = () => {
@@ -148,7 +160,21 @@ const AppPage = () => {
       {/* Header */}
       <header className="bg-white border-b shadow-sm p-4">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-blue-600">HyperMail</h1>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              asChild
+              className="mr-2"
+              title="Voltar"
+            >
+              <Link to="/">
+                <ArrowLeft className="h-5 w-5" />
+              </Link>
+            </Button>
+            <img src={LOGO_URL} alt={APP_NAME} className="h-8 w-auto" />
+            <h1 className="text-2xl font-bold text-blue-600">Editor de Email</h1>
+          </div>
           
           <div className="flex items-center gap-4">
             <Button onClick={handleSaveEmail} variant="outline" size="sm">
@@ -196,6 +222,27 @@ const AppPage = () => {
                   </div>
                 ))}
               </div>
+              
+              {/* Opções de redes sociais expandidas */}
+              {selectedComponentId && components.find(c => c.id === selectedComponentId)?.type === "social" && (
+                <div className="mt-4 border-t pt-4">
+                  <h3 className="text-sm font-medium mb-2">Redes Sociais</h3>
+                  <div className="space-y-2">
+                    {SOCIAL_OPTIONS.map(option => (
+                      <div key={option.id} className="flex items-center">
+                        <input 
+                          type="checkbox" 
+                          id={`social-${option.id}`} 
+                          className="mr-2" 
+                        />
+                        <label htmlFor={`social-${option.id}`} className="text-sm">
+                          {option.label}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

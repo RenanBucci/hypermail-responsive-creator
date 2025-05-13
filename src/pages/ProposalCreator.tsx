@@ -5,18 +5,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { FileText, MessageSquare, Send, Settings, Webhook } from "lucide-react";
-import { debounce } from "@/utils/performance";
+import { FileText, MessageSquare, Send, ArrowLeft } from "lucide-react";
 import { useProposalStore } from "@/store/proposalStore";
 import ProposalPreview from "@/components/proposal/ProposalPreview";
 import ChatMessage from "@/components/proposal/ChatMessage";
+import { Link } from "react-router-dom";
+import { LOGO_URL, APP_NAME } from "../App";
 
 const ProposalCreator = () => {
   const [message, setMessage] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [webhookUrl, setWebhookUrl] = useState("");
-  const [webhookSettingsOpen, setWebhookSettingsOpen] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { messages, addMessage, title, setTitle, company, setCompany } = useProposalStore();
 
@@ -60,9 +58,9 @@ const ProposalCreator = () => {
           timestamp: new Date().toISOString()
         });
         
-        // Se a URL do webhook estiver definida, ativa-o
-        if (webhookUrl) {
-          triggerWebhook();
+        // Webhook fica oculto, sem UI
+        if (process.env.WEBHOOK_URL) {
+          triggerWebhook(process.env.WEBHOOK_URL);
         }
         
         setIsGenerating(false);
@@ -75,9 +73,9 @@ const ProposalCreator = () => {
     }
   };
 
-  const triggerWebhook = async () => {
+  const triggerWebhook = async (url: string) => {
     try {
-      await fetch(webhookUrl, {
+      await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         mode: "no-cors", // Lidar com problemas de CORS
@@ -88,11 +86,9 @@ const ProposalCreator = () => {
           timestamp: new Date().toISOString()
         })
       });
-      
-      toast.success("Webhook acionado com sucesso");
+      console.log("Webhook acionado com sucesso");
     } catch (error) {
       console.error("Erro ao acionar webhook:", error);
-      toast.error("Falha ao acionar webhook");
     }
   };
 
@@ -108,19 +104,22 @@ const ProposalCreator = () => {
       <header className="bg-white border-b shadow-sm p-4">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <FileText className="h-6 w-6 text-blue-600" /> 
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              asChild
+              className="mr-2"
+              title="Voltar"
+            >
+              <Link to="/">
+                <ArrowLeft className="h-5 w-5" />
+              </Link>
+            </Button>
+            <img src={LOGO_URL} alt={APP_NAME} className="h-8 w-auto" />
             <h1 className="text-2xl font-bold text-blue-600">Criador de Propostas</h1>
           </div>
           
           <div className="flex items-center gap-4">
-            <Button 
-              variant="outline" 
-              className="flex items-center gap-2"
-              onClick={() => setWebhookSettingsOpen(!webhookSettingsOpen)}
-            >
-              <Webhook className="h-4 w-4" />
-              Webhook
-            </Button>
             <Button onClick={handleExportPDF} className="flex items-center gap-2">
               <FileText className="h-4 w-4" /> 
               Exportar PDF
@@ -128,37 +127,6 @@ const ProposalCreator = () => {
           </div>
         </div>
       </header>
-
-      {/* Configurações de Webhook */}
-      <Collapsible
-        open={webhookSettingsOpen}
-        onOpenChange={setWebhookSettingsOpen}
-        className="container mx-auto mt-4 bg-white p-4 rounded-md shadow-sm"
-      >
-        <CollapsibleTrigger asChild>
-          <div className="flex items-center justify-between cursor-pointer">
-            <div className="flex items-center gap-2">
-              <Settings className="h-5 w-5 text-gray-600" />
-              <h2 className="text-lg font-medium">Configurações de Webhook</h2>
-            </div>
-          </div>
-        </CollapsibleTrigger>
-        <CollapsibleContent className="mt-4 space-y-4">
-          <div className="grid gap-2">
-            <Label htmlFor="webhook-url">URL do Webhook n8n</Label>
-            <Input
-              id="webhook-url"
-              placeholder="https://seu-servidor-n8n.com/webhook/..."
-              value={webhookUrl}
-              onChange={(e) => setWebhookUrl(e.target.value)}
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500">
-              Insira a URL do seu webhook n8n para acionar fluxos de trabalho quando as propostas forem geradas.
-            </p>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
 
       {/* Conteúdo Principal */}
       <div className="flex-1 container mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 p-4 mt-4">

@@ -63,14 +63,6 @@ const Welcome = () => {
                       <Link to="/forgot-password">Esqueceu sua senha?</Link>
                     </Button>
                   </div>
-                  
-                  <div className="pt-4 text-center">
-                    <Button asChild variant="link">
-                      <Link to="/" className="text-sm">
-                        Continuar para o dashboard
-                      </Link>
-                    </Button>
-                  </div>
                 </div>
               </CardContent>
             </Card>

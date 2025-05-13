@@ -16,6 +16,13 @@ interface UserRole {
   };
 }
 
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  roleId: string;
+}
+
 interface UserPermissionState {
   emailAccess: AccessType;
   proposalAccess: AccessType;
@@ -23,7 +30,9 @@ interface UserPermissionState {
   analyticsAccess: AccessType;
   
   userRoles: UserRole[];
+  users: User[];
   activeRoleId: string | null;
+  isAdminMode: boolean;
   
   // Actions
   setEmailAccess: (access: AccessType) => void;
@@ -36,6 +45,14 @@ interface UserPermissionState {
   deleteRole: (id: string) => void;
   setActiveRole: (id: string | null) => void;
   applyRolePermissions: (id: string) => void;
+  
+  addUser: (user: Omit<User, 'id'>) => void;
+  updateUser: (id: string, user: Partial<User>) => void;
+  deleteUser: (id: string) => void;
+  assignRoleToUser: (userId: string, roleId: string) => void;
+  
+  setAdminMode: (enabled: boolean) => void;
+  hasPermission: (userId: string, permission: keyof UserRole['permissions']) => boolean;
 }
 
 const defaultRoles: UserRole[] = [
@@ -74,6 +91,15 @@ const defaultRoles: UserRole[] = [
   }
 ];
 
+const defaultUsers: User[] = [
+  {
+    id: "admin-user",
+    name: "Admin",
+    email: "admin@empresa.com",
+    roleId: "admin"
+  }
+];
+
 export const useUserPermissionStore = create<UserPermissionState>()(
   persist(
     (set, get) => ({
@@ -83,7 +109,9 @@ export const useUserPermissionStore = create<UserPermissionState>()(
       analyticsAccess: "all",
       
       userRoles: defaultRoles,
+      users: defaultUsers,
       activeRoleId: "admin",
+      isAdminMode: true, // Por padrão, começamos em modo admin
       
       setEmailAccess: (emailAccess) => set({ emailAccess }),
       setProposalAccess: (proposalAccess) => set({ proposalAccess }),
@@ -109,9 +137,15 @@ export const useUserPermissionStore = create<UserPermissionState>()(
           (newUserRoles.length > 0 ? newUserRoles[0].id : null) : 
           state.activeRoleId;
           
+        // Atualize todos os usuários que tinham esta role
+        const updatedUsers = state.users.map(user => 
+          user.roleId === id ? { ...user, roleId: "admin" } : user
+        );
+          
         return {
           userRoles: newUserRoles,
-          activeRoleId: newActiveRoleId
+          activeRoleId: newActiveRoleId,
+          users: updatedUsers
         };
       }),
       
@@ -128,6 +162,41 @@ export const useUserPermissionStore = create<UserPermissionState>()(
             activeRoleId: id
           });
         }
+      },
+      
+      addUser: (user) => set((state) => ({
+        users: [...state.users, { ...user, id: `user-${Date.now()}` }]
+      })),
+      
+      updateUser: (id, updatedUser) => set((state) => ({
+        users: state.users.map(user => 
+          user.id === id ? { ...user, ...updatedUser } : user
+        )
+      })),
+      
+      deleteUser: (id) => set((state) => ({
+        users: state.users.filter(user => user.id !== id)
+      })),
+      
+      assignRoleToUser: (userId, roleId) => set((state) => ({
+        users: state.users.map(user =>
+          user.id === userId ? { ...user, roleId } : user
+        )
+      })),
+      
+      setAdminMode: (isAdminMode) => set({ isAdminMode }),
+      
+      hasPermission: (userId, permission) => {
+        // Sempre retorna true para o modo admin
+        if (get().isAdminMode) return true;
+        
+        const user = get().users.find(u => u.id === userId);
+        if (!user) return false;
+        
+        const role = get().userRoles.find(r => r.id === user.roleId);
+        if (!role) return false;
+        
+        return role.permissions[permission] === "all" || role.permissions[permission] === "admin";
       }
     }),
     {

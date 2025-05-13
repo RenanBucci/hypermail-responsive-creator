@@ -7,6 +7,12 @@ type PrimaryColorType = "blue" | "green" | "purple" | "orange" | "pink" | "red" 
 type AccentColorType = "blue" | "green" | "purple" | "orange" | "pink" | "red" | "teal" | "indigo" | "amber" | "cyan";
 type RadiusType = "none" | "small" | "medium" | "large" | "full";
 
+interface CustomColor {
+  r: number;
+  g: number;
+  b: number;
+}
+
 interface ThemeState {
   theme: ThemeType;
   primaryColor: PrimaryColorType;
@@ -14,6 +20,10 @@ interface ThemeState {
   radius: RadiusType;
   animations: boolean;
   reducedMotion: boolean;
+  customButtonColor: CustomColor;
+  customTextColor: CustomColor;
+  customAccentColor: CustomColor;
+  useCustomColors: boolean;
   
   // Actions
   setTheme: (theme: ThemeType) => void;
@@ -22,10 +32,15 @@ interface ThemeState {
   setRadius: (radius: RadiusType) => void;
   setAnimations: (enabled: boolean) => void;
   setReducedMotion: (enabled: boolean) => void;
+  setCustomButtonColor: (color: CustomColor) => void;
+  setCustomTextColor: (color: CustomColor) => void;
+  setCustomAccentColor: (color: CustomColor) => void;
+  setUseCustomColors: (enabled: boolean) => void;
   
   // Helper
   getSystemTheme: () => "light" | "dark";
   getEffectiveTheme: () => "light" | "dark";
+  getRgbString: (color: CustomColor) => string;
 }
 
 export const useThemeStore = create<ThemeState>()(
@@ -37,6 +52,10 @@ export const useThemeStore = create<ThemeState>()(
       radius: "medium",
       animations: true,
       reducedMotion: false,
+      customButtonColor: { r: 37, g: 99, b: 235 }, // Blue
+      customTextColor: { r: 17, g: 24, b: 39 }, // Dark gray
+      customAccentColor: { r: 139, g: 92, b: 246 }, // Purple
+      useCustomColors: false,
       
       setTheme: (theme) => set({ theme }),
       setPrimaryColor: (primaryColor) => set({ primaryColor }),
@@ -44,6 +63,10 @@ export const useThemeStore = create<ThemeState>()(
       setRadius: (radius) => set({ radius }),
       setAnimations: (animations) => set({ animations }),
       setReducedMotion: (reducedMotion) => set({ reducedMotion }),
+      setCustomButtonColor: (customButtonColor) => set({ customButtonColor }),
+      setCustomTextColor: (customTextColor) => set({ customTextColor }),
+      setCustomAccentColor: (customAccentColor) => set({ customAccentColor }),
+      setUseCustomColors: (useCustomColors) => set({ useCustomColors }),
       
       getSystemTheme: () => {
         if (typeof window === "undefined") return "light";
@@ -56,6 +79,10 @@ export const useThemeStore = create<ThemeState>()(
           return get().getSystemTheme();
         }
         return theme;
+      },
+      
+      getRgbString: (color: CustomColor) => {
+        return `rgb(${color.r}, ${color.g}, ${color.b})`;
       }
     }),
     {

@@ -11,7 +11,7 @@ import { useThemeStore } from "@/store/themeStore";
 
 // Salva a URL do logo para acesso global
 export const LOGO_URL = "/lovable-uploads/e310737e-a3e5-4922-869d-209714dbc556.png";
-export const APP_NAME = "ProDigital Studio";
+export const APP_NAME = "ContentForge Pro";
 
 // Lazy load dos componentes de página
 const Welcome = lazy(() => import("./pages/Welcome"));
@@ -53,8 +53,8 @@ const routes = [
   { path: '/login', element: <Login />, showHeader: true, hideAuthButtons: true },
   { path: '/register', element: <Register />, showHeader: true, hideAuthButtons: true },
   { path: '/forgot-password', element: <ForgotPassword />, showHeader: true, hideAuthButtons: true },
-  { path: '/app', element: <AppPage />, showHeader: true, backTo: "/" },
-  { path: '/proposal', element: <ProposalCreator />, showHeader: true, backTo: "/" },
+  { path: '/app', element: <AppPage />, showHeader: false, backTo: "/" },
+  { path: '/proposal', element: <ProposalCreator />, showHeader: false, backTo: "/" },
   { path: '/settings', element: <Settings />, showHeader: false },
   { path: '*', element: <NotFound />, showHeader: true },
 ];
