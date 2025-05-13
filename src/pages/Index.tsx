@@ -2,10 +2,11 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { APP_NAME, LOGO_URL } from "../App";
-import { FileText, LayoutTemplate, ArrowRight, Shield, Settings, CircleCheck, CircleX, CircleInfo, User, Book, CircleUser } from "lucide-react";
+import { FileText, LayoutTemplate, ArrowRight, Shield, Settings, CircleCheck, User, Book, CircleUser } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { useThemeStore } from "@/store/themeStore";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const Index = () => {
   const { theme } = useThemeStore();
@@ -59,13 +60,7 @@ const Index = () => {
                 Utilize nossas ferramentas para criar emails HTML e propostas profissionais.
               </p>
             </div>
-            <div className="hidden md:block">
-              <img 
-                src={LOGO_URL} 
-                alt={APP_NAME} 
-                className="h-16 w-auto opacity-60" 
-              />
-            </div>
+            {/* Removed the logo from here as requested */}
           </div>
         </motion.div>
 
@@ -80,57 +75,114 @@ const Index = () => {
             <Card className="bg-white hover:shadow-md transition-shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden group">
               <CardHeader className="pb-2 bg-gray-50 dark:bg-gray-800/80">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-blue-500" />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Shield className="h-5 w-5 text-blue-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Ferramentas de acesso rápido</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                   Acesso rápido
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-5">
                 <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                   Acesse seus aplicativos mais usados diretamente
                 </p>
                 <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" size="sm" asChild className="justify-start hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-300">
-                    <Link to="/app" className="flex items-center gap-2">
-                      <LayoutTemplate className="h-4 w-4" />
-                      Email
-                    </Link>
-                  </Button>
-                  <Button variant="outline" size="sm" asChild className="justify-start hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-300">
-                    <Link to="/proposal" className="flex items-center gap-2">
-                      <FileText className="h-4 w-4" />
-                      Propostas
-                    </Link>
-                  </Button>
-                  <Button variant="outline" size="sm" asChild className="justify-start hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-300">
-                    <Link to="/settings" className="flex items-center gap-2">
-                      <Settings className="h-4 w-4" />
-                      Configurações
-                    </Link>
-                  </Button>
-                  <Button variant="outline" size="sm" asChild className="justify-start hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-300">
-                    <Link to="/settings?tab=ajuda" className="flex items-center gap-2">
-                      <Book className="h-4 w-4" />
-                      Tutoriais
-                    </Link>
-                  </Button>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="outline" size="sm" asChild className="justify-start hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-300">
+                          <Link to="/app" className="flex items-center gap-2">
+                            <LayoutTemplate className="h-4 w-4" />
+                            Email
+                          </Link>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Construa emails HTML responsivos</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="outline" size="sm" asChild className="justify-start hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-300">
+                          <Link to="/proposal" className="flex items-center gap-2">
+                            <FileText className="h-4 w-4" />
+                            Propostas
+                          </Link>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Gere propostas profissionais</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="outline" size="sm" asChild className="justify-start hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-300">
+                          <Link to="/settings" className="flex items-center gap-2">
+                            <Settings className="h-4 w-4" />
+                            Configurações
+                          </Link>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Personalize sua experiência</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="outline" size="sm" asChild className="justify-start hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-300">
+                          <Link to="/settings?tab=ajuda" className="flex items-center gap-2">
+                            <Book className="h-4 w-4" />
+                            Tutoriais
+                          </Link>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Aprenda a usar o sistema</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
               </CardContent>
             </Card>
           </motion.div>
           
           <motion.div variants={itemAnimation}>
-            <Card className="bg-white hover:shadow-md transition-all dark:bg-gray-800 dark:border-gray-700 group hover:-translate-y-1 duration-300">
+            <Card className="bg-white hover:shadow-lg transition-all dark:bg-gray-800 dark:border-gray-700 group hover:-translate-y-1 duration-300 h-full">
               <CardHeader className="pb-2 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/40 dark:to-indigo-900/40">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <LayoutTemplate className="h-5 w-5 text-blue-500" />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <LayoutTemplate className="h-5 w-5 text-blue-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Crie templates de email profissionais</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                   Construtor de Email
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-5">
                 <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                   Crie emails HTML responsivos e profissionais com nosso editor visual
                 </p>
-                <Button asChild className="w-full group-hover:bg-blue-600">
+                <Button asChild className="w-full mt-auto group-hover:bg-blue-600">
                   <Link to="/app" className="flex items-center gap-2">
                     Acessar <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
@@ -140,18 +192,27 @@ const Index = () => {
           </motion.div>
           
           <motion.div variants={itemAnimation}>
-            <Card className="bg-white hover:shadow-md transition-all dark:bg-gray-800 dark:border-gray-700 group hover:-translate-y-1 duration-300">
+            <Card className="bg-white hover:shadow-lg transition-all dark:bg-gray-800 dark:border-gray-700 group hover:-translate-y-1 duration-300 h-full">
               <CardHeader className="pb-2 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/40 dark:to-indigo-900/40">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-blue-500" />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <FileText className="h-5 w-5 text-blue-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Crie propostas em PDF facilmente</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                   Gerador de Propostas
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-5">
                 <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                   Crie propostas profissionais em PDF com a ajuda da nossa IA
                 </p>
-                <Button asChild className="w-full group-hover:bg-blue-600">
+                <Button asChild className="w-full mt-auto group-hover:bg-blue-600">
                   <Link to="/proposal" className="flex items-center gap-2">
                     Acessar <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
@@ -169,14 +230,26 @@ const Index = () => {
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           <motion.div variants={itemAnimation}>
-            <Card className="bg-white hover:shadow-md transition-shadow dark:bg-gray-800 dark:border-gray-700">
+            <Card className="bg-white hover:shadow-md transition-shadow dark:bg-gray-800 dark:border-gray-700 hover:-translate-y-1 duration-300">
               <CardHeader>
-                <CardTitle>Atividade Recente</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <User className="h-5 w-5 text-blue-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Suas ações recentes no sistema</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  Atividade Recente
+                </CardTitle>
                 <CardDescription>Suas últimas ações no sistema</CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  <li className="p-2 border-b dark:border-gray-700">
+                  <li className="p-3 border-b dark:border-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
                     <div className="flex items-center gap-4">
                       <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded">
                         <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -187,7 +260,7 @@ const Index = () => {
                       </div>
                     </div>
                   </li>
-                  <li className="p-2 border-b dark:border-gray-700">
+                  <li className="p-3 border-b dark:border-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
                     <div className="flex items-center gap-4">
                       <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded">
                         <LayoutTemplate className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -198,7 +271,7 @@ const Index = () => {
                       </div>
                     </div>
                   </li>
-                  <li className="p-2">
+                  <li className="p-3 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
                     <div className="flex items-center gap-4">
                       <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded">
                         <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -212,43 +285,73 @@ const Index = () => {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button variant="outline" size="sm" className="w-full">Ver todas as atividades</Button>
+                <Button variant="outline" size="sm" className="w-full hover:bg-blue-50 dark:hover:bg-blue-900/20">Ver todas as atividades</Button>
               </CardFooter>
             </Card>
           </motion.div>
           
           <motion.div variants={itemAnimation}>
-            <Card className="bg-white hover:shadow-md transition-shadow dark:bg-gray-800 dark:border-gray-700">
+            <Card className="bg-white hover:shadow-md transition-shadow dark:bg-gray-800 dark:border-gray-700 hover:-translate-y-1 duration-300">
               <CardHeader>
-                <CardTitle>Sistema</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Settings className="h-5 w-5 text-blue-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Informações e status do sistema</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  Sistema
+                </CardTitle>
                 <CardDescription>Status e informações</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-700/30 rounded">
+                  <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/30 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors">
                     <span>Versão do sistema</span>
                     <span className="font-medium">2.1.0</span>
                   </div>
-                  <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-700/30 rounded">
-                    <span>API</span>
-                    <span className="font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
-                      <CircleCheck className="h-4 w-4" /> Online
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-700/30 rounded">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/30 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors">
+                          <span>API</span>
+                          <span className="font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                            <CircleCheck className="h-4 w-4" /> Online
+                          </span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>A API está funcionando normalmente</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/30 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors">
                     <span>Último backup</span>
                     <span className="font-medium">Hoje às 03:00</span>
                   </div>
-                  <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-700/30 rounded">
-                    <span>Usuários ativos</span>
-                    <span className="font-medium flex items-center gap-1">
-                      <CircleUser className="h-4 w-4 text-blue-500" /> 23
-                    </span>
-                  </div>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/30 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors">
+                          <span>Usuários ativos</span>
+                          <span className="font-medium flex items-center gap-1">
+                            <CircleUser className="h-4 w-4 text-blue-500" /> 23
+                          </span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Número de usuários ativos no momento</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
               </CardContent>
               <CardFooter>
-                <Button variant="outline" size="sm" className="w-full">Status do sistema</Button>
+                <Button variant="outline" size="sm" className="w-full hover:bg-blue-50 dark:hover:bg-blue-900/20">Status do sistema</Button>
               </CardFooter>
             </Card>
           </motion.div>

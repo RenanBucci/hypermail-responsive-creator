@@ -1,4 +1,3 @@
-
 import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
 
@@ -66,7 +65,9 @@ const defaultFooter: EmailComponent = {
     padding: "20px",
     socialLinks: [
       { platform: "instagram", url: "https://instagram.com/", icon: "instagram" },
-      { platform: "facebook", url: "https://facebook.com/", icon: "facebook" }
+      { platform: "facebook", url: "https://facebook.com/", icon: "facebook" },
+      { platform: "linkedin", url: "https://linkedin.com/", icon: "linkedin" },
+      { platform: "x", url: "https://x.com/", icon: "x" }
     ],
     companyAddress: "Seu endereço aqui",
     copyrightText: `© ${new Date().getFullYear()} qvaestvm. Todos os direitos reservados.`
