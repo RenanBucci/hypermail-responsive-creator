@@ -41,6 +41,7 @@ const DRAG_COMPONENTS = [
   { id: "social", label: "Redes Sociais", icon: "🔗" },
 ];
 
+// Updated social media options including LinkedIn and X
 const SOCIAL_OPTIONS = [
   { id: "facebook", label: "Facebook" },
   { id: "instagram", label: "Instagram" },
@@ -224,7 +225,7 @@ const AppPage = () => {
               </div>
               
               {/* Opções de redes sociais expandidas */}
-              {selectedComponentId && components.find(c => c.id === selectedComponentId)?.type === 'social' && (
+              {selectedComponentId && components.find(c => c.id === selectedComponentId)?.type === ('social' as ComponentType) && (
                 <div className="mt-4 border-t pt-4">
                   <h3 className="text-sm font-medium mb-2">Redes Sociais</h3>
                   <div className="space-y-2">
