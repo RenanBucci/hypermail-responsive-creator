@@ -22,6 +22,7 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const AppPage = lazy(() => import("./pages/App"));
 const ProposalCreator = lazy(() => import("./pages/ProposalCreator"));
 const Settings = lazy(() => import("./pages/Settings"));
+const Tutorial = lazy(() => import("./pages/Tutorial"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Fallback de carregamento
@@ -56,6 +57,7 @@ const routes = [
   { path: '/app', element: <AppPage />, showHeader: false, backTo: "/" },
   { path: '/proposal', element: <ProposalCreator />, showHeader: false, backTo: "/" },
   { path: '/settings', element: <Settings />, showHeader: false },
+  { path: '/tutorial', element: <Tutorial />, showHeader: true, backTo: "/" },
   { path: '*', element: <NotFound />, showHeader: true },
 ];
 

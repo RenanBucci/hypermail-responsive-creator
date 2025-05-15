@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { APP_NAME, LOGO_URL } from "../App";
-import { FileText, LayoutTemplate, Settings, LogOut, User, Moon, Sun, Menu, ArrowLeft } from 'lucide-react';
+import { FileText, LayoutTemplate, Settings, LogOut, User, Moon, Sun, Menu, ArrowLeft, HelpCircle } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useThemeStore } from '@/store/themeStore';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
@@ -46,6 +46,12 @@ export function AppHeader({ showAuth = false, showMenu = true, backTo }: AppHead
       path: "/proposal", 
       icon: <FileText className="h-4 w-4 mr-2" />,
       description: "Gere propostas comerciais profissionais" 
+    },
+    { 
+      name: "Tutorial", 
+      path: "/tutorial", 
+      icon: <HelpCircle className="h-4 w-4 mr-2" />,
+      description: "Aprenda a usar todas as ferramentas" 
     },
   ];
 
@@ -141,6 +147,12 @@ export function AppHeader({ showAuth = false, showMenu = true, backTo }: AppHead
                   <Link to="/settings" className="flex items-center">
                     <Settings className="h-4 w-4 mr-2" />
                     <span>Configurações</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/tutorial" className="flex items-center">
+                    <HelpCircle className="h-4 w-4 mr-2" />
+                    <span>Tutorial</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="text-red-600">
