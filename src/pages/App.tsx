@@ -224,7 +224,7 @@ const AppPage = () => {
               </div>
               
               {/* Opções de redes sociais expandidas */}
-              {selectedComponentId && components.find(c => c.id === selectedComponentId)?.type === "social" && (
+              {selectedComponentId && components.find(c => c.id === selectedComponentId)?.type === 'social' && (
                 <div className="mt-4 border-t pt-4">
                   <h3 className="text-sm font-medium mb-2">Redes Sociais</h3>
                   <div className="space-y-2">
@@ -307,3 +307,4 @@ const AppPage = () => {
 };
 
 export default AppPage;
+
